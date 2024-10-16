@@ -12,7 +12,7 @@ export const products = [
     { id: 8, name: 'Product 8', category: 'Home & Garden', price: 119.99, image: 'https://via.placeholder.com/150?text=Product+8', rating: 3.9 },
 ];
 
-const Home = () => {
+const Home = ({addCart}) => {
     const [ratingFilter, setRatingFilter] = useState([]);
     const [categoryFilter, setCategoryFilter] = useState('');
     const categories = ['Electronics', 'Clothing', 'Books', 'Home & Garden'];
@@ -29,6 +29,10 @@ const Home = () => {
                 ? prev.filter(r => r !== rating) 
                 : [...prev, rating]
         );
+    };
+
+    const handleCart = (product) => {
+        addCart(product);
     };
 
     return (
@@ -83,7 +87,7 @@ const Home = () => {
                                     Price: ${product.price.toFixed(2)}<br />
                                     Rating: {product.rating.toFixed(1)}
                                 </Card.Text>
-                                <Button variant="primary">Add to Cart</Button>
+                                <Button variant="primary" onClick={() => handleCart(product)}>Add to Cart</Button>
                             </Card.Body>
                         </Card>
                     </Col>

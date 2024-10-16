@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { RouterProvider,createBrowserRouter } from 'react-router-dom';
 import Category from './pages/CategoryPage';
+import Cart from './pages/Cart';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -11,6 +12,10 @@ const router = createBrowserRouter([
   {
     path: '/category/:category',
     element: <Category />,
+  },
+  {
+    path: '/cart',
+    element: <Cart />,
   },
 ]);
 
