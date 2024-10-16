@@ -5,7 +5,7 @@ import Footer from './components/Footer';
 import Home from './pages/home';
 import { useState } from 'react';
 
-export let pro
+export let pro = []
 
 function App() {
   const [cartsItem,setCartsItem] = useState([]);  

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
 
 export const products = [
     { id: 1, name: 'Product 1', category: 'Electronics', price: 199.99, image: 'https://via.placeholder.com/150?text=Product+1', rating: 4.5 },
@@ -37,63 +36,69 @@ const Home = ({addCart}) => {
 
     return (
         <div className='bg-info-subtle'>
-             <Container className="py-4 ">
-            <h1 className="text-center mb-5">Welcome to Our Store</h1>
-            <Row className="mb-4">
-                <Col md={6}>
-                    <Form.Group>
-                        <Form.Label>Filter by Category:</Form.Label>
-                        <Form.Control 
-                            as="select" 
-                            value={categoryFilter} 
-                            onChange={(e) => setCategoryFilter(e.target.value)}
-                        >
-                            <option value="">All Categories</option>
-                            {categories.map((category, index) => (
-                                <option key={index} value={category}>{category}</option>
-                            ))}
-                        </Form.Control>
-                    </Form.Group>
-                </Col>
-                <Col md={6}>
-                    <Form.Group>
-                        <Form.Label>Filter by Rating:</Form.Label>
-                        <div>
-                            {ratings.map(rating => (
-                                <Form.Check
-                                    key={rating}
-                                    inline
+                <div className="container py-4">
+        <h1 className="text-center mb-5">Welcome to Our Store</h1>
+        
+        <div className="row mb-4">
+            <div className="col-md-6">
+                <div className="form-group">
+                    <label>Filter by Category:</label>
+                    <select 
+                        className="form-control" 
+                        value={categoryFilter} 
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                    >
+                        <option value="">All Categories</option>
+                        {categories.map((category, index) => (
+                            <option key={index} value={category}>{category}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+            
+            <div className="col-md-6">
+                <div className="form-group">
+                    <label>Filter by Rating:</label>
+                    <div>
+                        {ratings.map(rating => (
+                            <div className="form-check form-check-inline" key={rating}>
+                                <input
+                                    className="form-check-input"
                                     type="checkbox"
                                     id={`rating-${rating}`}
-                                    label={`${rating}★`}
                                     checked={ratingFilter.includes(rating)}
                                     onChange={() => handleRatingChange(rating)}
                                 />
-                            ))}
-                        </div>
-                    </Form.Group>
-                </Col>
-            </Row>
+                                <label className="form-check-label" htmlFor={`rating-${rating}`}>
+                                    {`${rating}★`}
+                                </label>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <Row>
-                {filteredProducts.map(product => (
-                    <Col key={product.id} md={3} className="mb-4">
-                        <Card>
-                            <Card.Img variant="top" src={product.image} alt={product.name} />
-                            <Card.Body>
-                                <Card.Title>{product.name}</Card.Title>
-                                <Card.Text>
-                                    Category: {product.category}<br />
-                                    Price: ${product.price.toFixed(2)}<br />
-                                    Rating: {product.rating.toFixed(1)}
-                                </Card.Text>
-                                <Button variant="primary" onClick={() => handleCart(product)}>Add to Cart</Button>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
-        </Container>
+        <div className="row">
+            {filteredProducts.map(product => (
+                <div key={product.id} className="col-md-3 mb-4">
+                    <div className="card">
+                        <img className="card-img-top" src={product.image} alt={product.name} />
+                        <div className="card-body">
+                            <h5 className="card-title">{product.name}</h5>
+                            <p className="card-text">
+                                Category: {product.category}<br />
+                                Price: ${product.price.toFixed(2)}<br />
+                                Rating: {product.rating.toFixed(1)}
+                            </p>
+                            <button className="btn btn-primary" onClick={() => handleCart(product)}>Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    </div>
+
         </div>
        
     );

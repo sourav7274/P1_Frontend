@@ -1,6 +1,5 @@
 import { products } from "./home";
 import { useParams } from "react-router-dom";
-import { Container, Row, Col, Card } from 'react-bootstrap';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -11,23 +10,23 @@ const Category = () =>{
     return (
         <div className="bg-info-subtle">
         <Header />
-        <Container className="py-4 my-5">
-            <h1>Category: {category}</h1>
-            <Row>
-                {filteredProducts.map(product => (
-                    <Col key={product.id} md={4}>
-                        <Card>
-                            <Card.Img src={product.image} alt={product.name} />
-                            <Card.Body>
-                                <Card.Title>Name: {product.name}</Card.Title>
-                                <Card.Text>Price: {product.price}</Card.Text>
-                                <Card.Text>Rating: {product.rating}</Card.Text>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
-        </Container>
+        <div className="container py-4 my-5">
+        <h1>Category: {category}</h1>
+        <div className="row">
+            {filteredProducts.map(product => (
+                <div key={product.id} className="col-md-4">
+                    <div className="card">
+                        <img className="card-img-top" src={product.image} alt={product.name} />
+                        <div className="card-body">
+                            <h5 className="card-title">Name: {product.name}</h5>
+                            <p className="card-text">Price: {product.price}</p>
+                            <p className="card-text">Rating: {product.rating}</p>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+        </div>
         <Footer />
         </div>
     );
