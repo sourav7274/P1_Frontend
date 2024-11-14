@@ -2,27 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { RouterProvider,createBrowserRouter } from 'react-router-dom';
-import Category from './pages/CategoryPage';
-import Cart from './pages/Cart';
+import { Provider } from 'react-redux';
+import store from './app/store'
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
-  },
-  {
-    path: '/category/:category',
-    element: <Category />,
-  },
-  {
-    path: '/cart',
-    element: <Cart />,
   },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+  <Provider store={store}>
     <RouterProvider router={router} />
+  </Provider>
   </React.StrictMode>
 );
 
