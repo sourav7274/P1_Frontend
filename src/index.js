@@ -4,10 +4,31 @@ import App from './App';
 import { RouterProvider,createBrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './app/store'
+import Games from './pages/Games';
+import Jackets from './pages/Jackets';
+import Books from './pages/Books';
+import Phone from './pages/Phone';
+
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+  },
+  {
+    path:"/games",
+    element: <Games/>
+  },
+  {
+    path:"/books",
+    element: <Books/>
+  },
+  {
+    path:"/jackets",
+    element: <Jackets/>
+  },
+    {
+    path:"/phones",
+    element: <Phone/>
   },
 ]);
 

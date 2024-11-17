@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const fetchPhones = createAsyncThunk('phones/fetch',async() =>{
     const response = await axios("http://localhost:5000/phone")
-    console.log(response.data.data)
+    // console.log(response.data.data)
     return response.data.data
 })
 
