@@ -1,4 +1,3 @@
-
 const Footer = () => {
     return (
         <footer className="bg-dark text-light py-4 mt-auto">
@@ -6,7 +5,7 @@ const Footer = () => {
                 <div className="row">
                     <div className="col-md-4">
                         <h5>About Us</h5>
-                        <p>We are a  fake company dedicated to providing not so excellent services and products to our customers.</p>
+                        <p>We are a fake company dedicated to providing not so excellent services and products to our customers.</p>
                     </div>
                     <div className="col-md-4">
                         <h5>Quick Links</h5>
@@ -28,8 +27,7 @@ const Footer = () => {
                 </div>
             </div>
         </footer>
-    )
-}
+    );
+};
 
 export default Footer;
-    

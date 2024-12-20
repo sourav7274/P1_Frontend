@@ -8,6 +8,13 @@ import Games from './pages/Games';
 import Jackets from './pages/Jackets';
 import Books from './pages/Books';
 import Phone from './pages/Phone';
+import Wishlist from './pages/Wishlist';
+import Cart from './pages/Cart';
+import BookDetail from './pages/bookDetail';
+import PhoneDetail from './pages/phoneDetails';
+import GameDetail from './pages/gameDetails';
+import JacketDetail from './pages/jacketDetails';
+
 
 const router = createBrowserRouter([
   {
@@ -29,6 +36,30 @@ const router = createBrowserRouter([
     {
     path:"/phones",
     element: <Phone/>
+  },
+  {
+    path:"/cart",
+    element: <Cart/>
+  },
+  {
+    path:"/wishlist",
+    element: <Wishlist/>
+  },
+  {
+    path:"/games/:id",
+    element:<GameDetail/>
+  },
+  {
+    path:"/phones/:id",
+    element:<PhoneDetail/>
+  },
+  {
+    path:"/jackets/:id",
+    element:<JacketDetail/>
+  },
+  {
+    path:"/book/:id",
+    element:<BookDetail/>
   },
 ]);
 

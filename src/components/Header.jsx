@@ -1,12 +1,23 @@
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-const Header = ({cartsItem}) => {
+const Header = () => {
+    const { wishlist } = useSelector((state) => state.wishlist);
+
     return (
         <header>
-            <nav className="navbar navbar-expand-lg bg-dark px-4 text-white py-4"> {/* Increased padding on the y-axis to make the navbar thicker */}
+            <nav className="navbar navbar-expand-lg bg-dark px-4 text-white py-4">
                 <div className="container container-fluid">
                     <Link className="navbar-brand text-white" to="/">E-Commerce maybe????</Link>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <button
+                        className="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav"
+                        aria-controls="navbarNav"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbarNav">
@@ -24,11 +35,35 @@ const Header = ({cartsItem}) => {
                                 <Link className="nav-link text-white" to="/jackets">Jackets</Link>
                             </li>
                         </ul>
+                        <ul className="navbar-nav ms-auto">
+                            <li className="nav-item">
+                                <Link className="nav-link text-white" to="/wishlist">
+                                    <i className="fas fa-heart"></i> Wishlist
+                                    {wishlist.length > 0 && (
+                                        <span
+                                            style={{
+                                                display: 'inline-block',
+                                                width: '8px',
+                                                height: '8px',
+                                                backgroundColor: 'red',
+                                                borderRadius: '50%',
+                                                marginLeft: '5px',
+                                            }}
+                                        ></span>
+                                    )}
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link text-white" to="/cart">
+                                    <i className="fas fa-shopping-cart"></i> Cart
+                                </Link>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </nav>
         </header>
-    )
-}
+    );
+};
 
 export default Header;
