@@ -2,7 +2,7 @@ import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchJackets = createAsyncThunk('jackets/fetch',async() =>{
-    const response = await axios("http://localhost:5000/jacket")
+    const response = await axios("https://p1-backend.vercel.app/jacket")
     console.log(response.data.data)
     return response.data.data
 })

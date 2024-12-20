@@ -2,7 +2,7 @@ import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchGames = createAsyncThunk('games/fetch',async() =>{
-    const response = await axios("http://localhost:5000/game")
+    const response = await axios("https://p1-backend.vercel.app/game")
     // console.log(response.data.data)
     return response.data.data
 })

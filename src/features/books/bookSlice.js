@@ -3,7 +3,7 @@ import axios from "axios";
 
 
 export const fetchBooks = createAsyncThunk('books/get',async() =>{
-    const response = await axios("http://localhost:5000/book")
+    const response = await axios("https://p1-backend.vercel.app/book")
     return response.data.data
 })
 
