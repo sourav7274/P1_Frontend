@@ -14,7 +14,7 @@ import BookDetail from './pages/bookDetail';
 import PhoneDetail from './pages/phoneDetails';
 import GameDetail from './pages/gameDetails';
 import JacketDetail from './pages/jacketDetails';
-
+import User from './pages/User';
 
 const router = createBrowserRouter([
   {
@@ -61,6 +61,10 @@ const router = createBrowserRouter([
     path:"/book/:id",
     element:<BookDetail/>
   },
+  {
+    path:'/user',
+    element:<User/>
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

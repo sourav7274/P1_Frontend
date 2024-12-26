@@ -58,6 +58,11 @@ const Header = () => {
                                     <i className="fas fa-shopping-cart"></i> Cart
                                 </Link>
                             </li>
+                            <li className="nav-item">
+                                <Link className="nav-link text-white" to="/user">
+                                   <img alt="userPng" style={{ height: "30px", width:"30px"}} src='https://media.istockphoto.com/id/2151669184/vector/vector-flat-illustration-in-grayscale-avatar-user-profile-person-icon-gender-neutral.jpg?s=612x612&w=is&k=20&c=0nUqNCdx5lQnefamkMzDW5OD_8jMpsGVQdv7TOVL0UI=' />
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                 </div>
