@@ -118,6 +118,8 @@ const Jackets = () => {
       {/* Error Handling */}
       {error && <div className="text-danger">Error: {error}</div>}
 
+      
+
       {/* Jacket Cards */}
       <div className="row">
         {filterJack.map((b) => (
@@ -132,12 +134,26 @@ const Jackets = () => {
               onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
               onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
-              <img
-                onClick={() => navigate(`/jackets/${b._id}`)}
-                src={b.coverImageUrl}
-                alt="jacket"
-                className="card-img-top"
-              />
+               <div
+                          style={{
+                            height: "250px",
+                            overflow: "hidden",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <img
+                            src={b.imageUrl}
+                            onClick={() => navigate(`/jackets/${b._id}`)}
+                            alt={b.title}
+                            style={{
+                              maxHeight: "100%",
+                              maxWidth: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+               </div>
               <div className="card-body">
                 <Link className="btn text-decoration-none" to="/">
                   <h5 className="card-title">{b.name}</h5>

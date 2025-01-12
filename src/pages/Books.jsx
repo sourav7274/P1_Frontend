@@ -7,6 +7,8 @@ import { Link } from "react-router-dom"
 import { addToWishlist } from "../features/wishlist/wishlistSlice"
 import { addToCart } from "../features/cart/cart"
 import { useNavigate } from "react-router-dom"
+import './some.css'
+
 
 const Books = () => {
     const dispatch = useDispatch()
@@ -55,7 +57,7 @@ const Books = () => {
         }  
 
     }
-
+    
     return (
         <>
         <div className="d-flex flex-column min-vh-100">
@@ -102,13 +104,13 @@ const Books = () => {
             <div className="container py-4" style={{ flex: 1 }}>
               <h1 className="mb-4">Books</h1>
       
-              {/* Loading Indicator */}
-              {status === "loading" && (
-                <button className="btn btn-dark" type="button" disabled>
-                  <span className="spinner-grow spinner-grow-sm me-2" aria-hidden="true"></span>
-                  <span role="status">Loading...</span>
-                </button>
-              )}
+            {/* Loading Indicator */}
+            {status === "loading" && (
+            <div class="d-flex justify-content-center align-items-center min-vh-100">
+              <div class="loader"></div>
+            </div>
+            )}
+
       
               {/* Error Handling */}
               {error && <p className="text-danger">An error occurred. Please try again later.</p>}
@@ -119,7 +121,7 @@ const Books = () => {
                   status === "loading" ? <p className="text-muted">Books are loading, please wait</p>  : 
                   <p className="text-muted">No books of that genre at the moment, try again later.</p>
                 )}
-      
+              
                 {filteredBooks.map((b) => (
                   <div key={b.id} className="col-md-4">
                     <div
@@ -132,12 +134,28 @@ const Books = () => {
                       onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                       onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >
-                      <img
-                        onClick={() => navigate(`/book/${b._id}`)}
-                        src={b.coverImageUrl}
-                        alt={b.title}
-                        className="card-img-top"
-                      />
+                    
+                      <div
+                          style={{
+                            height: "250px",
+                            overflow: "hidden",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <img
+                            src={b.imageUrl}
+                            onClick={() => navigate(`/book/${b._id}`)}
+                            alt={b.title}
+                            style={{
+                              maxHeight: "100%",
+                              maxWidth: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </div>
+
                       <div className="card-body">
                         <Link to="/" className="btn text-decoration-none">
                           <h5 className="card-title">{b.title}</h5>

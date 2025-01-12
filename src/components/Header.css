@@ -1,0 +1,51 @@
+.header {
+  background-color: rgb(33, 37, 41);
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #343a40; /* Subtle border for separation */
+  color: white;
+}
+
+.logo {
+  font-size: 1.5rem;
+  color: white; /* Ensure the logo text is white */
+  font-weight: bold;
+}
+
+.icons {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.icon {
+  font-size: 1.5rem;
+  color: white; /* Icons are white */
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.icon:hover {
+  color: #007bff; /* Add a blue hover effect */
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background-color: #dc3545; /* Red badge for notifications */
+  color: white; /* White text inside the badge */
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 0.2rem 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Subtle shadow for badge */
+}

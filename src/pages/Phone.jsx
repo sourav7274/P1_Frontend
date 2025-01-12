@@ -112,8 +112,8 @@ const Books = () =>{
               {/* Sorting and Phone Cards */}
               <div className="row my-4">
                 {/* Sorting Options */}
-                
-      
+          
+
                 {/* No Phones Available */}
                 {filterPhone.length === 0 && (
                   status === "loading" ? <p className="text-muted">Phones are loading, please wait</p>  : 
@@ -133,13 +133,26 @@ const Books = () =>{
                       onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
                       onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
                     >
-                      <img
-                        src={phone.coverImageUrl}
-                        alt="phone"
-                        onClick={() => dispatch(navigate(`/phones/${phone._id}`))}
-                        className="card-img-top"
-                        style={{ cursor: 'pointer' }}
-                      />
+                  <div
+                          style={{
+                            height: "250px",
+                            overflow: "hidden",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <img
+                            src={phone.imageUrl}
+                            onClick={() => navigate(`/phones/${phone._id}`)}
+                            alt={phone.title}
+                            style={{
+                              maxHeight: "100%",
+                              maxWidth: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+               </div>
                       <div className="card-body">
                         <Link className="btn text-decoration-none" to="/">
                           <h5 className="card-title">{phone.name}</h5>

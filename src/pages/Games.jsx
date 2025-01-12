@@ -15,7 +15,7 @@ const Games = () =>{
     const category = ["Action","Adventure","Role-Playing Game (RPG)","Sports","Racing","Simulation","Strategy","Puzzle",
                     "Shooter","Fighting","Platformer","Open World","Survival","Horror","Card","MMORPG"]
     const dispatch = useDispatch()
-    // console.log(games)
+    console.log(games)
     const navigate = useNavigate()
     useEffect(() => {
         if (games.length > 0 )
@@ -25,16 +25,16 @@ const Games = () =>{
     },[games])
 
     const handleChange = (e) =>{
-        console.log(e.target.value)
+        console.log(e)
         console.log(filteredGames)
-        setCat(e.target.value)
-        if(e.target.value === "All")
+        setCat(e)
+        if(e === "All")
         {
             setfilterGames(games)
         }
         else
         {
-            const filtGames = games.filter((game) => game.category.includes(e.target.value))
+            const filtGames = games.filter((game) => game.category.includes(e))
             setfilterGames(filtGames)
         }
     }
@@ -54,13 +54,13 @@ const Games = () =>{
     }
 
     const handlePrice = (val) => {
-        console.log(val)
         if (val === " ") { 
-            setfilterGames(games);
-        } else if (val === "asc") {
-            setfilterGames([...games].sort((a, b) => a.price - b.price));
-        } else { 
-            setfilterGames([...games].sort((a, b) => b.price - a.price));
+            setfilterGames(filteredGames);
+        } 
+        if (val === "asc") {
+            setfilterGames([...filteredGames].sort((a, b) => a.price - b.price));
+        } if(val == "dsc") { 
+            setfilterGames([...filteredGames].sort((a, b) => b.price - a.price));
         }
     };
     
@@ -92,12 +92,10 @@ const Games = () =>{
                 </div></li>
                 <li>
                     <div>
-                        <label className="form-label">Order By Price: </label>
-                        <select onChange={(e) => handlePrice(e.target.value)} className="form-control">
-                            <option value=" ">Default</option>
-                            <option value="asc">Ascending</option>
-                            <option value="desc">Descending</option>
-                        </select>
+                        <label className="form-label">Sort By Price: </label><br/>
+                        <input onClick={(e) => handlePrice(e.target.value)} className="me-2 mt-3" type="radio" name="priceS" value=" " />Default<br/>
+                        <input onClick={(e) => handlePrice(e.target.value)} className="me-2 mt-3" type="radio" name="priceS" value="asc" />Ascending<br/>
+                        <input onClick={(e) => handlePrice(e.target.value)} className="me-2 mt-3" type="radio" name="priceS" value="dsc" />Descending
                     </div>
                 </li>
               </ul>
@@ -122,7 +120,7 @@ const Games = () =>{
                 <div className="row g-4">
                   {filteredGames.length === 0 && (
                   status === "loading" ? <p className="text-muted">Games are loading, please wait</p>  : 
-                  <p className="text-muted">No books of that genre at the moment, try again later.</p>
+                  <p className="text-muted">No games of that category at the moment, try again later.</p>
                 )}
       
                   {filteredGames.map((b) => (
@@ -137,15 +135,30 @@ const Games = () =>{
                         onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                         onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                       >
-                        <img
-                          src={b.coverImageUrl}
-                          onClick={() => handleCLick(b._id)}
-                          alt={b.title}
-                          className="card-img-top"
-                        />
+                       <div
+                          style={{
+                            height: "250px",
+                            overflow: "hidden",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <img
+                            src={b.imageUrl}
+                            onClick={() => handleCLick(b._id)}
+                            alt={b.title}
+                            style={{
+                              maxHeight: "100%",
+                              maxWidth: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </div>
+
                         <div className="card-body">
                           <Link to="/" className="btn text-decoration-none">
-                            <h5 className="card-title">{b.title}</h5>
+                            <h5 className="card-title">{b.name}</h5>
                           </Link>
                           <p className="mb-2">Meta-Critic Score: {b.metaCriticRating}</p>
                           <p className="mb-2">{b.price == 0 ? "Free to Play" : "$ " + b.price }</p>
