@@ -77,15 +77,12 @@ const Jackets = () => {
         <li>
         <div>
           <label htmlFor="sortPriceAsc" className="form-label">Order By  Price: </label>
-          <select
-            id="sortPriceAsc"
-            onChange={(e) => handleChange(e.target.value)}
-            className="form-select"
-          >
-            <option value=" ">Default</option>
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
+          <br/>
+          <input name="price" onChange={(e) => handleChange(e.target.value)} type="radio" id="asc" value=" " /> Default
+          <br/>
+          <input name="price" onChange={(e) => handleChange(e.target.value)} className="my-3" type="radio" id="priceI" value="asc"/> Ascending
+          <br/>
+          <input name="price" onChange={(e) => handleChange(e.target.value)} type="radio" id="priceI" value="dsc"/> Descending
         </div>
         </li>
         <li>

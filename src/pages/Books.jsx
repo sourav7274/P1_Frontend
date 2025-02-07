@@ -91,11 +91,12 @@ const Books = () => {
               <li>
                 <div>
                   <label className="form-label">Order By Price</label>
-                  <select onChange={(e) => handlePrice(e.target.value)} className="form-select">
-                    <option value=" ">Default</option>
-                    <option value="asc">Ascending</option>
-                    <option value="dsc">Descending</option>
-                  </select>
+                  <br/>
+                    <input name="price" onChange={(e) => handlePrice(e.target.value)} type="radio" id="asc" value=" " /> Default
+                    <br/>
+                    <input name="price" onChange={(e) => handlePrice(e.target.value)} className="my-3" type="radio" id="priceI" value="asc"/> Ascending
+                    <br/>
+                    <input name="price" onChange={(e) => handlePrice(e.target.value)} type="radio" id="priceI" value="dsc"/> Descending
                 </div>
               </li>
             </ul>
