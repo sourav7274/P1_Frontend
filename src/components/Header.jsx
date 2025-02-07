@@ -55,8 +55,11 @@ const Header = () => {
         {/* Icons */}
         <div className="icons">
           <div className="icon-wrapper">
-            <FaShoppingCart className="icon cart-icon" />
-            <span className="badge">{cartCount}</span>
+          <Link to="/cart">
+          <FaShoppingCart className="icon cart-icon" />
+          <span className="badge">{cartCount}</span>
+          </Link>
+           
           </div>
           <div className="icon-wrapper">
             <Link to="/wishlist">

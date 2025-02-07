@@ -108,20 +108,18 @@ const Games = () =>{
       
             
                 {status === "loading" && (
-                  <button className="btn btn-dark" type="button" disabled>
-                    <span className="spinner-grow spinner-grow-sm me-2" aria-hidden="true"></span>
-                    <span role="status">Loading...</span>
-                  </button>
+                  <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
+                    <div className="loader"></div>
+                  </div>
                 )}
       
                 
                 {error && <p className="text-danger">An error occurred. Please try again later.</p>}      
           
                 <div className="row g-4">
-                  {filteredGames.length === 0 && (
-                  status === "loading" ? <p className="text-muted">Games are loading, please wait</p>  : 
-                  <p className="text-muted">No games of that category at the moment, try again later.</p>
-                )}
+                  {filteredGames.length === 0 && status !== "loading" && (
+                    <p className="text-muted">No games of that category at the moment, try again later.</p>
+                  )}
       
                   {filteredGames.map((b) => (
                     <div key={b._id} className="col-md-4">
@@ -157,11 +155,11 @@ const Games = () =>{
                         </div>
 
                         <div className="card-body">
-                          <Link to="/" className="btn text-decoration-none">
+                          <Link to={`/games/${b._id}`} className="btn text-decoration-none">
                             <h5 className="card-title">{b.name}</h5>
                           </Link>
-                          <p className="mb-2">Meta-Critic Score: {b.metaCriticRating}</p>
-                          <p className="mb-2">{b.price == 0 ? "Free to Play" : "$ " + b.price }</p>
+                          <p className="card-text">Developer: {b.studio}</p>
+                          <p className="card-text">Price: $ {b.price}</p>
                           <div className="d-flex justify-content-between">
                             <button onClick={() => handleCart(b)} className="btn btn-primary">
                               Add to Cart

@@ -22,6 +22,7 @@ const Jackets = () => {
       'Puma', 'Reebok', 'Under Armour', 'Wrangler', 'Carhartt'
   ]
 
+  console.log(jackets)
     useEffect(() => {
         dispatch(fetchJackets());
     }, [dispatch]);
@@ -109,21 +110,21 @@ const Jackets = () => {
 
       {/* Loading Indicator */}
       {status === "loading" && (
-        <button className="btn btn-dark" type="button" disabled>
-          <span className="spinner-grow spinner-grow-sm me-2" aria-hidden="true"></span>
-          <span role="status">Loading...</span>
-        </button>
+        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
+          <div className="loader"></div>
+        </div>
       )}
 
       {/* Error Handling */}
-      {error && <div className="text-danger">Error: {error}</div>}
+      {error && <p className="text-danger">An error occurred. Please try again later.</p>}
 
-      
+      <div className="row g-4">
+        {filterJack.length === 0 && status !== "loading" && (
+          <p className="text-muted">No jackets of that category at the moment, try again later.</p>
+        )}
 
-      {/* Jacket Cards */}
-      <div className="row">
         {filterJack.map((b) => (
-          <div className="col-4 my-3" key={b.id}>
+          <div key={b._id} className="col-md-4">
             <div
               className="card h-100"
               style={{
@@ -134,30 +135,31 @@ const Jackets = () => {
               onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
               onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
-               <div
-                          style={{
-                            height: "250px",
-                            overflow: "hidden",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <img
-                            src={b.imageUrl}
-                            onClick={() => navigate(`/jackets/${b._id}`)}
-                            alt={b.title}
-                            style={{
-                              maxHeight: "100%",
-                              maxWidth: "100%",
-                              objectFit: "cover",
-                            }}
-                          />
-               </div>
+              <div
+                style={{
+                  height: "250px",
+                  overflow: "hidden",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <img
+                  src={b.imageUrl}
+                  onClick={() => navigate(`/jackets/${b._id}`)}
+                  alt={b.title}
+                  style={{
+                    maxHeight: "100%",
+                    maxWidth: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
               <div className="card-body">
-                <Link className="btn text-decoration-none" to="/">
+                <Link to={`/jackets/${b._id}`} className="btn text-decoration-none">
                   <h5 className="card-title">{b.name}</h5>
                 </Link>
+                <p className="card-text">Brand: {b.brand}</p>
                 <p className="card-text">Price: $ {b.price}</p>
                 <div className="d-flex justify-content-between">
                   <button onClick={() => handleCart(b)} className="btn btn-primary">Add to cart</button>
@@ -168,11 +170,6 @@ const Jackets = () => {
           </div>
         ))}
       </div>
-      {filterJack.length === 0 && (
-                  status === "loading" ? <p className="text-muted">Jackets are loading, please wait</p>  : 
-                  <p className="text-muted">No books of that genre at the moment, try again later.</p>
-                )}
-
     </div>
   </div>
 

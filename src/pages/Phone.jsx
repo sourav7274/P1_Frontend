@@ -100,68 +100,61 @@ const Books = () =>{
       
               {/* Loading Indicator */}
               {status === "loading" && (
-                <button className="btn btn-dark" type="button" disabled>
-                  <span className="spinner-grow spinner-grow-sm me-2" aria-hidden="true"></span>
-                  <span role="status">Loading...</span>
-                </button>
+                <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
+                  <div className="loader"></div>
+                </div>
               )}
       
-              {/* Error Logging */}
-              {error && console.log(error)}
+              {/* Error Handling */}
+              {error && <p className="text-danger">An error occurred. Please try again later.</p>}
       
-              {/* Sorting and Phone Cards */}
-              <div className="row my-4">
-                {/* Sorting Options */}
-          
-
-                {/* No Phones Available */}
-                {filterPhone.length === 0 && (
-                  status === "loading" ? <p className="text-muted">Phones are loading, please wait</p>  : 
-                  <p className="text-muted">No books of that genre at the moment, try again later.</p>
+              {/* Phone Cards */}
+              <div className="row g-4">
+                {filterPhone.length === 0 && status !== "loading" && (
+                  <p className="text-muted">No phones of that category at the moment, try again later.</p>
                 )}
       
-                {/* Phones List */}
-                {filterPhone.map((phone) => (
-                  <div className="col-4 my-2" key={phone._id}>
+                {filterPhone.map((b) => (
+                  <div key={b._id} className="col-md-4">
                     <div
-                      className="card"
+                      className="card h-100"
                       style={{
                         border: '1px solid #ddd',
                         borderRadius: '5px',
                         transition: 'transform 0.3s ease-in-out',
                       }}
-                      onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                      onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                      onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >
-                  <div
+                      <div
+                        style={{
+                          height: "250px",
+                          overflow: "hidden",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img
+                          src={b.imageUrl}
+                          onClick={() => navigate(`/phones/${b._id}`)}
+                          alt={b.title}
                           style={{
-                            height: "250px",
-                            overflow: "hidden",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
+                            maxHeight: "100%",
+                            maxWidth: "100%",
+                            objectFit: "cover",
                           }}
-                        >
-                          <img
-                            src={phone.imageUrl}
-                            onClick={() => navigate(`/phones/${phone._id}`)}
-                            alt={phone.title}
-                            style={{
-                              maxHeight: "100%",
-                              maxWidth: "100%",
-                              objectFit: "cover",
-                            }}
-                          />
-               </div>
+                        />
+                      </div>
                       <div className="card-body">
-                        <Link className="btn text-decoration-none" to="/">
-                          <h5 className="card-title">{phone.name}</h5>
+                        <Link to={`/phones/${b._id}`} className="btn text-decoration-none">
+                          <h5 className="card-title">{b.name}</h5>
                         </Link>
-                        <p className="card-text">Brand: {phone.brand}</p>
-                        <p className="card-text">Price: $ {phone.price}</p>
+                        <p className="card-text">Brand: {b.brand}</p>
+                        <p className="card-text">Price: $ {b.price}</p>
                         <div className="d-flex justify-content-between">
-                          <button onClick={() => handleCart(phone)} className="btn btn-primary">Add to Cart</button>
-                          <button onClick={() => handleWish(phone)} className="btn btn-outline-primary">Save to Wishlist</button>
+                          <button onClick={() => handleCart(b)} className="btn btn-primary">Add to cart</button>
+                          <button onClick={() => handleWish(b)} className="btn btn-outline-primary">Save to Wishlist</button>
                         </div>
                       </div>
                     </div>
