@@ -1,119 +1,231 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import { addAddress } from "../features/address/addresSlice";
-
+import { updateUser, deleteAddress } from "../features/user/userSlice";
+import { useNavigate } from "react-router-dom";
+import { localUser } from "../features/user/userSlice";
 
 const User = () => {
-    const dispatch = useDispatch()
-    const {address} = useSelector((state) => state.address)
-    const [dis,setDis] = useState(false)
-    const [newAddress, setAddress] = useState({
-        name: "",
-        phnNumber:"",
-        address:{
-            houseNo:"",
-            srtNum:"",
-            city:"",
-            state:"",
-            pincode:"",
-            landmarks:""
-        }
-    })
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const userState = useSelector((state) => state.user);
+  const user = userState.user || localUser;
+  const [dis, setDis] = useState(false);
+  const [newAddress, setAddress] = useState({
+    houseNo: "",
+    street: "",
+    city: "",
+    state: "",
+    pincode: "",
+    country: "",
+    landmark: "",
+  });
+  // console.log(localUser);
+  const handleChange = (val) => {
+    const { name, value } = val.target;
 
-    const handleChange = (val) =>{
-        const {name,value} = val.target
-        if(name in newAddress.address)
-        {
-            setAddress((prev) => ({...prev,address:{
-                ...prev.address,
-                [name]: value
-            }}))
-        }
-        else
-        {
-            setAddress((prev) => ({
-                ...prev,
-                [name]: value
-            }))
-        }
+    setAddress((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!user._id) {
+      navigate("/");
     }
+    dispatch(updateUser({ id: user._id, data: newAddress }));
+    setDis(false);
+    setAddress({
+      addName: "",
+      phnNumber: "",
+      houseNo: "",
+      street: "",
+      city: "",
+      state: "",
+      pincode: "",
+      country: "",
+      landmark: "",
+    });
+  };
 
-    const handleSubmit = (e) =>{
-        e.preventDefault()
-        dispatch(addAddress(newAddress))
-    }
+  const handledeleteAddress = (id) => {
+    dispatch(deleteAddress({ id: user._id, addId: id }));
+  };
 
-    console.log(address)
-    return (
-        <>
-            <Header />
-            <div className="d-flex flex-column min-vh-100">
-                <div className="flex-grow-1 mt-5">
-                    <h1 className="text-center">Manage Address</h1>
-                    {address.length>0 ? <>
-                    <div className="container mt-5">
-                    <h3 className="mx-5 my-5">Saved Address</h3>
-                        <div className="card">
-                            <div className="card-body">
-                                <p><b>Name : </b>{address[0].name}</p>
-                                <p><b>Phone Number : </b>{address[0].phnNumber}</p>
-                                <p><b>Address</b></p>
-                                <p><b>House Number : </b>{address[0].address.houseNo}</p>
-                                <p><b>Street Number : </b>{address[0].address.srtNum}</p>
-                                <p><b>City : </b>{address[0].address.city}</p>
-                                <p><b>State : </b>{address[0].address.state}</p>
-                                <p><b>Pincode : </b>{address[0].address.pincode}</p>
-                                <p>
-                                    <b>Landmarks/Special Directions: </b> 
-                                    {address[0].address.landmarks.toLowerCase() === "" || address[0].address.landmarks.toLowerCase() === "na"
-                                    ? "No Landmarks or special directions given"
-                                    : address[0].address.landmarks}
-                                </p>
-
-                            </div>
-                        </div>
+  return (
+    <>
+      <Header />
+      <div className="d-flex flex-column min-vh-100 bg-light">
+        <div className="flex-grow-1 mt-5 container">
+          <h1 className="text-center text-primary">Manage Account</h1>
+          <div className="card p-4 shadow-sm my-4">
+            <p>
+              <strong>Name:</strong> {user.name}
+            </p>
+            <p>
+              <strong>Email:</strong> {user.email}
+            </p>
+          </div>
+          {user.address.length > 0 ? (
+            <>
+              <h3 className="mx-5 my-3 text-secondary">Saved Addresses</h3>
+              {user.address.map((address) => (
+                <div className="container mt-2" key={address._id}>
+                  <div className="card shadow-sm mb-3">
+                    <div className="card-body">
+                      <p>
+                        <strong>Address Name:</strong> {address.addName}
+                      </p>
+                      <p>
+                        <strong>Contact Number:</strong> {address.phnNumber}
+                      </p>
+                      <p>
+                        <strong>House Number:</strong> {address.houseNo}
+                      </p>
+                      <p>
+                        <strong>Street:</strong> {address.street}
+                      </p>
+                      <p>
+                        <strong>City:</strong> {address.city}
+                      </p>
+                      <p>
+                        <strong>State:</strong> {address.state}
+                      </p>
+                      <p>
+                        <strong>Country:</strong> {address.country}
+                      </p>
+                      <p>
+                        <strong>Pincode:</strong> {address.pincode}
+                      </p>
+                      <p>
+                        <strong>Landmarks/Special Directions:</strong>{" "}
+                        {address.landmark ? (
+                          <span>{address.landmark}</span>
+                        ) : (
+                          <span>No Landmarks or special directions given</span>
+                        )}
+                      </p>
+                      <button
+                        onClick={() => handledeleteAddress(address._id)}
+                        className="btn btn-danger"
+                      >
+                        Delete
+                      </button>
                     </div>
-                  
-                    </>  :  
-                    <>
-                        <div className="container text-center mt-5">
-                            <p>No Address Saved</p>
-                            <button onClick={() => setDis(true) } className="btn btn-primary">Add Now</button>
-                            {dis === true && <>
-                                <form onSubmit={handleSubmit} className="mt-5 mb-3">
-                                    <label className="form-label">Name: </label>
-
-                                    <input name="name" onChange={(e) => handleChange(e)} value={newAddress.name} className="form-control" type="text"/>
-            
-                                    <label className="form-label mt-3">Address: </label>
-
-                                    <input name="houseNo" onChange={(e) => handleChange(e)} value={newAddress.address.houseNo} className="form-control" type="text" placeholder="House No."/>
-
-                                    <input name="srtNum" onChange={(e) => handleChange(e)} value={newAddress.address.srtNum} className="form-control my-2" type="text" placeholder="Street Number"/>
-
-                                    <input name="city" onChange={(e) => handleChange(e)} value={newAddress.address.city} className="form-control " type="text" placeholder="City"/>
-
-                                    <input name="state" onChange={(e) => handleChange(e)} value={newAddress.address.state} className="form-control my-2" type="text" placeholder="State"/>
-
-                                    <input name="pincode" onChange={(e) => handleChange(e)} value={newAddress.address.pincode} className="form-control" type="number" placeholder="Pincode"/>
-
-                                    <label className="form-label mt-3">Phone Number: </label>
-                                    <input name="phnNumber" value={newAddress.phnNumber} onChange={(e) => handleChange(e)} className="form-control" type="number"/>
-
-                                    <label className="form-label mt-3">Landmarks/ Special Instructions: </label>
-                                    <textarea name="landmarks" onChange={(e) => handleChange(e)} value={newAddress.address.landmarks} cols={50} rows={5} className="form-control" type="text"/>
-                                    <button type="submit" className="btn btn-primary my-3">Submit</button>
-                                </form>
-                            </>}
-                        </div>
-                    </>}
+                  </div>
                 </div>
-                <Footer />
+              ))}
+              <button
+                className="btn btn-primary my-3"
+                onClick={() => setDis(!dis)}
+              >
+                {dis ? "Cancel" : "Add More"}
+              </button>
+            </>
+          ) : (
+            <div className="container text-center mt-5">
+              <p className="text-muted">No Address Saved</p>
+              <button
+                className="btn btn-primary"
+                onClick={() => setDis(!dis)}
+              >
+                {dis ? "Cancel" : "Add Address"}
+              </button>
             </div>
-        </>
-    );
+          )}
+          {dis && (
+            <div className="card p-4 shadow-sm mt-4">
+              <form onSubmit={handleSubmit}>
+                <input
+                  className="form-control my-2"
+                  type="text"
+                  onChange={(e) => handleChange(e)}
+                  value={newAddress.addName}
+                  name="addName"
+                  placeholder="Address Name"
+                />
+                <input
+                  className="form-control my-2"
+                  type="number"
+                  onChange={(e) => handleChange(e)}
+                  value={newAddress.phnNumber}
+                  name="phnNumber"
+                  placeholder="Contact Number"
+                />
+                <input
+                  name="houseNo"
+                  onChange={(e) => handleChange(e)}
+                  value={newAddress.houseNo}
+                  className="form-control my-2"
+                  type="text"
+                  placeholder="House No."
+                />
+                <input
+                  name="street"
+                  onChange={(e) => handleChange(e)}
+                  value={newAddress.street}
+                  className="form-control my-2"
+                  type="text"
+                  placeholder="Street Number"
+                />
+                <input
+                  name="city"
+                  onChange={(e) => handleChange(e)}
+                  value={newAddress.city}
+                  className="form-control my-2"
+                  type="text"
+                  placeholder="City"
+                />
+                <input
+                  name="state"
+                  onChange={(e) => handleChange(e)}
+                  value={newAddress.state}
+                  className="form-control my-2"
+                  type="text"
+                  placeholder="State"
+                />
+                <input
+                  name="pincode"
+                  onChange={(e) => handleChange(e)}
+                  value={newAddress.pincode}
+                  className="form-control my-2"
+                  type="number"
+                  placeholder="Pincode"
+                />
+                <input
+                  name="country"
+                  onChange={(e) => handleChange(e)}
+                  value={newAddress.country}
+                  className="form-control my-2"
+                  type="text"
+                  placeholder="Country"
+                />
+                <label className="form-label mt-3">
+                  Landmarks/ Special Instructions:{" "}
+                </label>
+                <textarea
+                  name="landmark"
+                  onChange={(e) => handleChange(e)}
+                  value={newAddress.landmark}
+                  cols={50}
+                  rows={5}
+                  className="form-control my-2"
+                  type="text"
+                />
+                <button type="submit" className="btn btn-primary my-3">
+                  Submit
+                </button>
+              </form>
+            </div>
+          )}
+        </div>
+      </div>
+      <Footer />
+    </>
+  );
 };
 
 export default User;

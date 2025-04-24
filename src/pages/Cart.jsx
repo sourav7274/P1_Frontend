@@ -9,14 +9,15 @@ const Cart = () => {
     const [tprice,setPrice] = useState()
     const [dis,setDis] = useState(false)
     const [final,setFinal] = useState([])
-    const { cart } = useSelector((state) => state.cart);
-    const {address} = useSelector((state) => state.address)
+    const { user } = useSelector((state) => state.user);
+    const  cart  = user.cart
+    const address = user.address[0]
     const dispatch = useDispatch();
 
     const fTotal = (data) =>{
-        return data.reduce((acc,curr) => acc+= (curr.quantity*curr.price)  ,0)
+        return cart.reduce((acc,curr) => acc+= (curr.price)  ,0)
     }
-
+    console.log(cart)
     useEffect(() =>{
         const  total = fTotal(cart)
         setPrice(total)

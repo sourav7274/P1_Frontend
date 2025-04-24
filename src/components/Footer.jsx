@@ -5,25 +5,27 @@ const Footer = () => {
                 <div className="row">
                     <div className="col-md-4">
                         <h5>About Us</h5>
-                        <p>We are a fake company dedicated to providing not so excellent services and products to our customers.</p>
+                        <p>We are committed to delivering exceptional services and innovative solutions to meet the needs of our valued customers.</p>
                     </div>
                     <div className="col-md-4">
                         <h5>Quick Links</h5>
                         <ul className="list-unstyled">
                             <li><a href="/" className="text-light">Home</a></li>
-                            <li><a href="/features" className="text-light">Features</a></li>
-                            <li><a href="/pricing" className="text-light">Pricing</a></li>
+                            <li><a href="/services" className="text-light">Services</a></li>
+                            <li><a href="/contact" className="text-light">Contact</a></li>
+                            <li><a href="/about" className="text-light">About Us</a></li>
                         </ul>
                     </div>
                     <div className="col-md-4">
                         <h5>Contact Us</h5>
-                        <p>Email: info@example.com</p>
-                        <p>Phone: (123) 456-7890</p>
+                        <p>Email: support@yourcompany.com</p>
+                        <p>Phone: +1 (800) 123-4567</p>
+                        <p>Address: 123 Business Avenue, Suite 456, City, Country</p>
                     </div>
                 </div>
                 <hr className="bg-light" />
                 <div className="text-center">
-                    <p>&copy; 2023 Your Company Name. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
                 </div>
             </div>
         </footer>

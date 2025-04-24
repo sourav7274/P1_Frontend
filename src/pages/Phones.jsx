@@ -2,57 +2,31 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchGames } from "../features/games/gameSlice";
+import { fetchPhones } from "../features/phones/phoneSlice";
 import { Link } from "react-router-dom";
+import { addToWishlist } from "../features/wishlist/wishlistSlice";
 import { useNavigate } from "react-router-dom";
+import { addToCart } from "../features/cart/cart";
 import Toast from "../components/Toast";
-import { addToCart,addToWishlist } from "../features/user/userSlice";
-import {  motion,AnimatePresence } from "framer-motion";
 
-const Games = () => {
-  const { games, status, error } = useSelector((state) => state.games);
-  const [filteredGames, setfilterGames] = useState([]);
-   const { user } = useSelector((state) => state.user);
+const Phones = () => {
+  const { phones, status, error } = useSelector((state) => state.phones);
+  const [filteredPhones, setFilteredPhones] = useState([]);
   const [cat, setCat] = useState("All");
   const category = [
-    "Action",
-    "Adventure",
-    "Role-Playing Game (RPG)",
-    "Sports",
-    "Racing",
-    "Simulation",
-    "Strategy",
-    "Puzzle",
-    "Shooter",
-    "Fighting",
-    "Platformer",
-    "Open World",
-    "Survival",
-    "Horror",
-    "Card",
-    "MMORPG",
+    "Smartphone",
+    "Feature Phone",
+    "Foldable",
+    "Gaming Phone",
+    "Rugged Phone",
   ];
   const dispatch = useDispatch();
-  // console.log(games);
+  console.log(phones);
   const navigate = useNavigate();
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const [isHovered, setIsHovered] = useState(false);
-  const divVariant = {
-    initial: {
-      opacity: 0,
-      y: 50,
-    },
-    animate: (index) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: index * 0.1,
-      },
-    }),
-  };
 
   const triggerToast = (message) => {
     setToastMessage(message);
@@ -61,48 +35,49 @@ const Games = () => {
   };
 
   useEffect(() => {
-    if (games.length > 0) {
-      setfilterGames(games);
+    if (phones.length > 0) {
+      setFilteredPhones(phones);
     }
-  }, [games]);
+  }, [phones]);
 
   const handleChange = (e) => {
-    // console.log(e);
-    // console.log(filteredGames);
+    console.log(e);
+    console.log(filteredPhones);
     setCat(e);
     if (e === "All") {
-      setfilterGames(games);
+      setFilteredPhones(phones);
     } else {
-      const filtGames = games.filter((game) => game.category.includes(e));
-      setfilterGames(filtGames);
+      const filtPhones = phones.filter((phone) => phone.category.includes(e));
+      setFilteredPhones(filtPhones);
     }
   };
   useEffect(() => {
-    dispatch(fetchGames());
+    dispatch(fetchPhones());
   }, [dispatch]);
   const handleWish = (val) => {
-    dispatch(addToWishlist({id:user._id,data:val}));
+    console.log(val);
+    dispatch(addToWishlist(val));
     triggerToast(`<b>${val.name}</b> was Added to Wishlist!`);
   };
 
   const handleCart = (item) => {
-    dispatch(addToCart({id:user._id,data:{...item,quantity:1}}));
+    dispatch(addToCart(item));
     triggerToast(`<b>${item.name}</b> was Added to Wishlist!`);
   };
 
   const handleCLick = (val) => {
-    navigate(`/games/${val}`);
+    navigate(`/phones/${val}`);
   };
 
   const handlePrice = (val) => {
     if (val === " ") {
-      setfilterGames(filteredGames);
+      setFilteredPhones(filteredPhones);
     }
     if (val === "asc") {
-      setfilterGames([...filteredGames].sort((a, b) => a.price - b.price));
+      setFilteredPhones([...filteredPhones].sort((a, b) => a.price - b.price));
     }
     if (val == "dsc") {
-      setfilterGames([...filteredGames].sort((a, b) => b.price - a.price));
+      setFilteredPhones([...filteredPhones].sort((a, b) => b.price - a.price));
     }
   };
 
@@ -116,7 +91,7 @@ const Games = () => {
     }
   };
 
-  const paginatedGames = filteredGames.slice(
+  const paginatedPhones = phones.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -191,7 +166,7 @@ const Games = () => {
 
           <div className="p-4" style={{ flex: 1 }}>
             <div className="container">
-              <h1 className="mb-4">Games</h1>
+              <h1 className="mb-4">Phones</h1>
 
               {status === "loading" && (
                 <div
@@ -211,22 +186,15 @@ const Games = () => {
               )}
 
               <div className="row g-4">
-                {paginatedGames.length === 0 && status !== "loading" && (
+                {paginatedPhones.length === 0 && status !== "loading" && (
                   <p className="text-muted">
-                    No games of that category at the moment, try again later.
+                    No phones of that category at the moment, try again later.
                   </p>
                 )}
 
-                {paginatedGames.map((b,index) => (
+                {paginatedPhones.map((b) => (
                   <div key={b._id} className="col-md-4">
-                    <motion.div
-                      variants={divVariant}
-                      initial="initial"
-                      whileInView={"animate"}
-                      viewport={{
-                        once: true,
-                      }}
-                      custom={index}
+                    <div
                       className="card h-100"
                       style={{
                         border: "1px solid #ddd",
@@ -249,11 +217,7 @@ const Games = () => {
                           alignItems: "center",
                         }}
                       >
-                        <motion.img
-                          whileHover={{
-                            scale:1.1,
-                            z:2,
-                          }}
+                        <img
                           src={b.imageUrl}
                           onClick={() => handleCLick(b._id)}
                           alt={b.title}
@@ -264,15 +228,17 @@ const Games = () => {
                           }}
                         />
                       </div>
-                          
+
                       <div className="card-body">
                         <Link
-                          to={`/games/${b._id}`}
+                          to={`/phones/${b._id}`}
                           className="btn text-decoration-none"
                         >
                           <h5 className="card-title">{b.name}</h5>
                         </Link>
-                        <p className="card-text">Developer: {b.studio}</p>
+                        <p className="card-text">
+                          Manufacturer: {b.manufacturer}
+                        </p>
                         <p className="card-text">Price: $ {b.price}</p>
                         <div className="d-flex justify-content-between">
                           <button
@@ -289,8 +255,7 @@ const Games = () => {
                           </button>
                         </div>
                       </div>
-                      
-                    </motion.div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -304,7 +269,7 @@ const Games = () => {
                 </button>
                 <button
                   onClick={handleNextPage}
-                  disabled={currentPage * itemsPerPage >= games.length}
+                  disabled={currentPage * itemsPerPage >= phones.length}
                   className="btn btn-secondary"
                 >
                   Next
@@ -332,4 +297,4 @@ const Games = () => {
   );
 };
 
-export default Games;
+export default Phones;

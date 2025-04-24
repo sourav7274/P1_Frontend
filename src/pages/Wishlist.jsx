@@ -3,10 +3,11 @@ import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { removeFromWishList } from "../features/wishlist/wishlistSlice";
-import { addToCart } from "../features/cart/cart";
+import { addToCart } from "../features/user/userSlice";
 
 const Wishlist = () => {
-    const { wishlist } = useSelector((state) => state.wishlist);
+    const { user } = useSelector((state) => state.user);
+    const  wishlist  = user.wishlist
     const dispatch = useDispatch();
 
     const handleClick = (abc) => {
@@ -15,7 +16,7 @@ const Wishlist = () => {
 
     const handleCart = (item) => {
         dispatch(removeFromWishList(item._id));
-        dispatch(addToCart(item));
+        dispatch(addToCart({id:user._id,data:{...item,quantity:1}}));
     };
 
     return (
