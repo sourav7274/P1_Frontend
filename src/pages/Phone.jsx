@@ -68,16 +68,16 @@ const Books = () => {
     if (val === "All") {
       setFilter(phones);
     } else {
-      setFilter(phones.filter((phone) => phone.color.includes(val)));
+      setFilter(phones.filter((phone) => phone.pcolor.includes(val)));
     }
   };
   const handleWish = (wish) => {
     dispatch(addToWishlist(wish));
-    triggerToast(`<b>${wish.name}</b> was Added to Wishlist!`);
+    triggerToast(`<b>${wish.title}</b> was Added to Wishlist!`);
   };
   const handleCart = (item) => {
     dispatch(addToCart(item));
-    triggerToast(`<b>${item.name}</b> was Added to Wishlist!`);
+    triggerToast(`<b>${item.title}</b> was Added to Wishlist!`);
   };
 
   const handlePrice = (val) => {
@@ -236,7 +236,7 @@ const Books = () => {
                         to={`/phones/${b._id}`}
                         className="btn text-decoration-none"
                       >
-                        <h5 className="card-title">{b.name}</h5>
+                        <h5 className="card-title">{b.title}</h5>
                       </Link>
                       <p className="card-text">Brand: {b.brand}</p>
                       <p className="card-text">Price: $ {b.price}</p>

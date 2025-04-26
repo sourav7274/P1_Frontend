@@ -3,8 +3,28 @@ import games from "../images/games.jpg";
 import phone from "../images/phone-1869510_1920.jpg";
 import jackets from "../images/jackets.jpeg";
 import { Link } from "react-router-dom";
+import { fetchGames } from "../features/games/gameSlice";
+import { fetchBooks } from "../features/books/bookSlice";
+import { fetchPhones } from "../features/phones/phoneSlice";
+import { fetchJackets } from "../features/jackets/jacketSLice";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 const AllProducts = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchGames);
+  }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchBooks);
+  }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchPhones);
+  }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchJackets);
+  }, [dispatch]);
+
   return (
     <div className="container">
       <div style={{ position: "relative" }}>

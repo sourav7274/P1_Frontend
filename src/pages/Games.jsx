@@ -6,15 +6,15 @@ import { fetchGames } from "../features/games/gameSlice";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast";
-import { addToCart,addToWishlist } from "../features/user/userSlice";
-import {  motion,AnimatePresence } from "framer-motion";
+import { addToCart, addToWishlist, getUserByID } from "../features/user/userSlice";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Games = () => {
   const { games, status, error } = useSelector((state) => state.games);
   const [filteredGames, setfilterGames] = useState([]);
-   const { user } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   const [cat, setCat] = useState("All");
-  const category = [
+  const gcategory = [
     "Action",
     "Adventure",
     "Role-Playing Game (RPG)",
@@ -39,7 +39,6 @@ const Games = () => {
   const [showToast, setShowToast] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const [isHovered, setIsHovered] = useState(false);
   const divVariant = {
     initial: {
       opacity: 0,
@@ -73,21 +72,24 @@ const Games = () => {
     if (e === "All") {
       setfilterGames(games);
     } else {
-      const filtGames = games.filter((game) => game.category.includes(e));
+      const filtGames = games.filter((game) => game.gcategory.includes(e));
       setfilterGames(filtGames);
     }
   };
   useEffect(() => {
     dispatch(fetchGames());
   }, [dispatch]);
+  
   const handleWish = (val) => {
-    dispatch(addToWishlist({id:user._id,data:val}));
-    triggerToast(`<b>${val.name}</b> was Added to Wishlist!`);
+    dispatch(addToWishlist({ id: user._id, data: { proID: val._id, quantity: 1 } }));
+    triggerToast(`<b>${val.title}</b> was Added to Wishlist!`);
   };
 
   const handleCart = (item) => {
-    dispatch(addToCart({id:user._id,data:{...item,quantity:1}}));
-    triggerToast(`<b>${item.name}</b> was Added to Wishlist!`);
+    dispatch(
+      addToCart({ id: user._id, data: { proID: item._id, quantity: 1 } })
+    );
+    triggerToast(`<b>${item.title}</b> was Added to Cart!`);
   };
 
   const handleCLick = (val) => {
@@ -136,17 +138,17 @@ const Games = () => {
               <li>
                 {" "}
                 <div className="mb-4">
-                  <label htmlFor="category" className="form-label">
-                    Sort by Category:
+                  <label htmlFor="gcategory" className="form-label">
+                    Sort by gcategory:
                   </label>
                   <select
-                    id="category"
+                    id="gcategory"
                     value={cat}
                     onChange={(e) => handleChange(e.target.value)}
                     className="form-select"
                   >
                     <option value="All">All</option>
-                    {category.map((cat) => (
+                    {gcategory.map((cat) => (
                       <option key={cat} value={cat}>
                         {cat}
                       </option>
@@ -217,7 +219,7 @@ const Games = () => {
                   </p>
                 )}
 
-                {paginatedGames.map((b,index) => (
+                {paginatedGames.map((b, index) => (
                   <div key={b._id} className="col-md-4">
                     <motion.div
                       variants={divVariant}
@@ -251,8 +253,8 @@ const Games = () => {
                       >
                         <motion.img
                           whileHover={{
-                            scale:1.1,
-                            z:2,
+                            scale: 1.1,
+                            z: 2,
                           }}
                           src={b.imageUrl}
                           onClick={() => handleCLick(b._id)}
@@ -264,13 +266,13 @@ const Games = () => {
                           }}
                         />
                       </div>
-                          
+
                       <div className="card-body">
                         <Link
                           to={`/games/${b._id}`}
                           className="btn text-decoration-none"
                         >
-                          <h5 className="card-title">{b.name}</h5>
+                          <h5 className="card-title">{b.title}</h5>
                         </Link>
                         <p className="card-text">Developer: {b.studio}</p>
                         <p className="card-text">Price: $ {b.price}</p>
@@ -289,7 +291,6 @@ const Games = () => {
                           </button>
                         </div>
                       </div>
-                      
                     </motion.div>
                   </div>
                 ))}

@@ -29,11 +29,9 @@ const GameDetail = () =>{
                 </div>
                 <div className='col'>
                     <h1>{detail.title}</h1>
-                    <p>{detail.summary}</p>
+                    <p>{detail.description}</p>
                     <p>{detail.language}</p>
                     <p>{detail.genre.join(', ')}</p>
-                    <p>Completion Time - Approx {detail.completionTime
-                    } hrs</p>
                     <p>First Published On - { new Date(detail.publishedYear).toLocaleDateString()}</p>
                     <p>Rating - {detail.rating}</p>
                     <h3>${detail.price}</h3>

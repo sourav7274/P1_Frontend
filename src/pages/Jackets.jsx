@@ -76,18 +76,18 @@ const Jackets = () => {
 
   const handleWish = (wish) => {
     dispatch(addToWishlist(wish));
-    triggerToast(`<b>${wish.name}</b> was Added to Wishlist!`);
+    triggerToast(`<b>${wish.title}</b> was Added to Wishlist!`);
   };
 
   const handleCart = (item) => {
     dispatch(addToCart(item));
-    triggerToast(`<b>${item.name}</b> was Added to Wishlist!`);
+    triggerToast(`<b>${item.title}</b> was Added to Wishlist!`);
   };
   const handleBrands = (val) => {
     if (val == " ") {
       setFilter(jackets);
     } else {
-      setFilter([...jackets].filter((item) => item.brand == val));
+      setFilter([...jackets].filter((item) => item.bbrand == val));
     }
   };
   const triggerToast = (message) => {
@@ -261,9 +261,9 @@ const Jackets = () => {
                       to={`/jackets/${b._id}`}
                       className="btn text-decoration-none"
                     >
-                      <h5 className="card-title">{b.name}</h5>
+                      <h5 className="card-title">{b.title}</h5>
                     </Link>
-                    <p className="card-text">Brand: {b.brand}</p>
+                    <p className="card-text">Brand: {b.bbrand}</p>
                     <p className="card-text">Price: $ {b.price}</p>
                     <div className="d-flex justify-content-between">
                       <button

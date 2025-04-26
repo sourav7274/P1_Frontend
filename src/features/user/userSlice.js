@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { json } from "react-router-dom";
 
-export const localUser = JSON.parse(sessionStorage.getItem("user"));
+const savedUser = sessionStorage.getItem('user')
+export const localUser = savedUser && savedUser !=   'undefined' ? JSON.parse(savedUser) : null
 
 export const getUser = createAsyncThunk("get/user", async (data) => {
   const response = await axios.post(`http://localhost:5000/login`, data);

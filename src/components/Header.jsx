@@ -1,14 +1,14 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import "./Header.css"; // Custom CSS file for styling
 import { Link, NavLink } from "react-router-dom";
+import { getUserByID } from "../features/user/userSlice";
 
 const Header = () => {
-  const cartCount = useSelector((state) => state.cart.cart.length);
-  const wishlistCount = useSelector((state) => state.wishlist.wishlist.length);
   const { user } = useSelector((state) => state.user);
   // console.log(user);
+
   return (
     <header className="header">
       <div className="px-4 py-2 d-flex justify-content-between align-items-center">
@@ -60,17 +60,17 @@ const Header = () => {
           <div className="icon-wrapper">
             <Link to="/cart">
               <FaShoppingCart className="icon cart-icon" />
-              <span className="badge">{cartCount}</span>
+              <span className="badge">{user?.cart?.length || 0}</span>
             </Link>
           </div>
           <div className="icon-wrapper">
             <Link to="/wishlist">
               <FaHeart className="icon wishlist-icon" />
-              <span className="badge">{wishlistCount}</span>
+              <span className="badge">{user?.wishlist?.length || 0}</span>
             </Link>
           </div>
           <div>
-            <Link  to="/user">
+            <Link to="/user">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="30"
