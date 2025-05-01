@@ -1,4 +1,4 @@
-import Header from "../components/Header"; 
+import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -25,7 +25,7 @@ const Cart = () => {
     setPrice(total);
   });
   const handleClick = (id) => {
-    dispatch(deleteItemFCart({ id: user._id, data:{ proID: id} }));
+    dispatch(deleteItemFCart({ id: user._id, data: { proID: id } }));
   };
   const handleBuy = () => {
     const finalCart = cart.reduce((acc, curr) => {
@@ -66,9 +66,38 @@ const Cart = () => {
               <div className="mt-5">
                 <h1 className="mb-4 text-center">Recent Order History</h1>
                 <div className="row">
-                  {user.orderHistory.map((history) => (
+                  <div className="container mt-5 flex-grow-1">
+                    <div className="order-history-masonry">
+                      {[...user.orderHistory].reverse().map((history) => (
+                        <div key={history._id} className="mb-4">
+                          <div className="card shadow-sm">
+                            <div className="card-body">
+                              <h5 className="card-title">
+                                Order ID: {history._id}
+                              </h5>
+                              {history.items.map((item, index) => (
+                                <div
+                                  key={index}
+                                  className="mb-3 border-bottom pb-2"
+                                >
+                                  <p className="mb-1 fw-bold">
+                                    {item.itemId.name || item.itemId.title}
+                                  </p>
+                                  <p className="mb-0 text-muted">
+                                    Quantity: {item.quantity}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* {[...user.orderHistory].reverse().map((history) => (
                     <div key={history._id} className="col-md-6 mb-4">
-                      <div className="card shadow-sm">
+                      <div className="card shadow-sm h-100">
                         <div className="card-body">
                           <h5 className="card-title">
                             Order ID: {history._id}
@@ -89,7 +118,7 @@ const Cart = () => {
                         </div>
                       </div>
                     </div>
-                  ))}
+                  ))} */}
                 </div>
               </div>
             </div>

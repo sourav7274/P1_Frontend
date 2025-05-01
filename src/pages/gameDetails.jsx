@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { fetchGames } from "../features/games/gameSlice";
 import { useParams } from "react-router-dom";
 import { addToCart, addToWishlist } from "../features/user/userSlice";
+import Toast from "../components/Toast";
 
 const GameDetail = () => {
   const { id } = useParams(); // Destructure 'id' directly
@@ -12,12 +13,14 @@ const GameDetail = () => {
   const [selectedImage, setSelectedImage] = useState(""); // Fallback to an empty string
   const [quantity, setQuantity] = useState(1);
   const { user } = useSelector((state) => state.user);
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
   useEffect(() => {
     dispatch(fetchGames());
   }, [dispatch]);
 
   const handleDecrease = () => setQuantity(quantity - 1);
-  const handleIncrease = () => setQuantity(quantity +1);
+  const handleIncrease = () => setQuantity(quantity + 1);
 
   const games = useSelector((state) => state.games.games);
   const detail = games?.find((item) => item._id === id);
@@ -35,7 +38,7 @@ const GameDetail = () => {
       addToWishlist({ id: user._id, data: { proID: detail._id, quantity } })
     );
     setQuantity(0);
-    // triggerToast(`<b>${val.title}</b> was Added to Wishlist!`);
+    triggerToast(`<b>${detail.title}</b> was Added to Wishlist!`);
   };
 
   const handleCart = () => {
@@ -43,7 +46,12 @@ const GameDetail = () => {
       addToCart({ id: user._id, data: { proID: detail._id, quantity } })
     );
     setQuantity(0);
-    // triggerToast(`<b>${item.title}</b> was Added to Cart!`);
+    triggerToast(`<b>${detail.title}</b> was Added to Cart!`);
+  };
+  const triggerToast = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000); // Auto-hide after 3 seconds
   };
 
   if (!detail) {
@@ -163,6 +171,18 @@ const GameDetail = () => {
         </div>
         <Footer />
       </div>
+      {showToast && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            zIndex: 1050,
+          }}
+        >
+          <Toast message={toastMessage} />
+        </div>
+      )}
     </>
   );
 };

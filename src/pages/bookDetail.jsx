@@ -6,12 +6,15 @@ import { fetchBooks } from "../features/books/bookSlice";
 import { useParams } from "react-router-dom";
 import { addToCart, addToWishlist } from "../features/user/userSlice";
 import { useState } from "react";
+import Toast from "../components/Toast";
+
 const BookDetail = () => {
   const { id } = useParams();
   const { user } = useSelector((state) => state.user);
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
-
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
   useEffect(() => {
     dispatch(fetchBooks());
   }, [dispatch]);
@@ -24,6 +27,7 @@ const BookDetail = () => {
       addToWishlist({ id: user._id, data: { proID: detail._id, quantity } })
     );
     setQuantity(0);
+    triggerToast(`<b>${detail.title}</b> was Added to Wishlist!`);
   };
   const handleDecrease = () => setQuantity(quantity - 1);
   const handleIncrease = () => setQuantity(quantity + 1);
@@ -32,10 +36,15 @@ const BookDetail = () => {
       addToCart({ id: user._id, data: { proID: detail._id, quantity } })
     );
     setQuantity(0);
+    triggerToast(`<b>${detail.title}</b> was Added to Cart!`);
   };
 
   if (!detail) return <div className="text-center mt-5">Loading...</div>;
-
+  const triggerToast = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000); // Auto-hide after 3 seconds
+  };
   return (
     <>
       <div className="d-flex flex-column min-vh-100">
@@ -107,6 +116,18 @@ const BookDetail = () => {
 
         <Footer />
       </div>
+      {showToast && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            zIndex: 1050,
+          }}
+        >
+          <Toast message={toastMessage} />
+        </div>
+      )}
     </>
   );
 };

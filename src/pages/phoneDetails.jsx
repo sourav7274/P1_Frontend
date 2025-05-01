@@ -5,13 +5,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { addToCart, addToWishlist } from "../features/user/userSlice";
 import { useEffect } from "react";
 import { useState } from "react";
-
+import Toast from "../components/Toast";
 const JacketDetail = () => {
   const ID = useParams();
   const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(0);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
   const handleDecrease = () => setQuantity(quantity - 1);
   const handleIncrease = () => setQuantity(quantity + 1);
   const phones = useSelector((state) => state.phone.phones);
@@ -20,12 +22,17 @@ const JacketDetail = () => {
   const handleImageSelect = (image) => {
     setSelectedImage(image);
   };
+  const triggerToast = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000); // Auto-hide after 3 seconds
+  };
   const handleWish = () => {
     dispatch(
       addToWishlist({ id: user._id, data: { proID: detail._id, quantity: 1 } })
     );
     setQuantity(0);
-    // triggerToast(`<b>${val.title}</b> was Added to Wishlist!`);
+    triggerToast(`<b>${detail.title}</b> was Added to Wishlist!`);
   };
 
   const handleCart = () => {
@@ -33,7 +40,7 @@ const JacketDetail = () => {
       addToCart({ id: user._id, data: { proID: detail._id, quantity: 1 } })
     );
     setQuantity(0);
-    // triggerToast(`<b>${item.title}</b> was Added to Cart!`);
+    triggerToast(`<b>${detail.title}</b> was Added to Cart!`);
   };
   return (
     <>
@@ -114,7 +121,7 @@ const JacketDetail = () => {
             <p>
               Released On: {new Date(detail.releaseDate).toLocaleDateString()}
             </p>
-            <h3>Quantity:{" "}{quantity}</h3>
+            <h3>Quantity: {quantity}</h3>
             <div className="d-flex align-items-center">
               <button
                 className="btn btn-outline-secondary"
@@ -150,6 +157,18 @@ const JacketDetail = () => {
       </div>
       {/* <p>{detail.stock > 5 ? "" : "Only a few Left! Hurry Up"}</p> */}
       <Footer />
+      {showToast && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            zIndex: 1050,
+          }}
+        >
+          <Toast message={toastMessage} />
+        </div>
+      )}
     </>
   );
 };

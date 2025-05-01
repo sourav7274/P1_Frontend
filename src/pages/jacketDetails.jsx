@@ -5,12 +5,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { addToCart, addToWishlist } from "../features/user/userSlice";
 import { fetchJackets } from "../features/jackets/jacketSLice";
 import { useEffect, useState } from "react";
+import Toast from "../components/Toast";
 
 const JacketDetail = () => {
   const { id } = useParams(); // Destructure 'id' directly
   const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(""); // Fallback to an empty string
   const { user } = useSelector((state) => state.user);
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
   useEffect(() => {
     dispatch(fetchJackets());
   }, [dispatch]);
@@ -32,7 +35,7 @@ const JacketDetail = () => {
       addToWishlist({ id: user._id, data: { proID: detail._id, quantity } })
     );
     setQuantity(0);
-    // triggerToast(`<b>${val.title}</b> was Added to Wishlist!`);
+    triggerToast(`<b>${detail.title}</b> was Added to Wishlist!`);
   };
 
   const handleCart = () => {
@@ -40,7 +43,12 @@ const JacketDetail = () => {
       addToCart({ id: user._id, data: { proID: detail._id, quantity } })
     );
     setQuantity(0);
-    // triggerToast(`<b>${item.title}</b> was Added to Cart!`);
+    triggerToast(`<b>${detail.title}</b> was Added to Cart!`);
+  };
+  const triggerToast = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000); // Auto-hide after 3 seconds
   };
   if (!detail) {
     return (
@@ -62,28 +70,33 @@ const JacketDetail = () => {
     <>
       <div className="d-flex flex-column min-vh-100">
         <Header />
-        <div className="container py-4">
-          <div className="row">
-            <div className="col-md-6">
+
+        <div className="container py-5 flex-grow-1">
+          <div className="row g-5">
+            {/* IMAGE SECTION */}
+            <div className="col-lg-6">
               <img
-                className="img-fluid rounded border mb-3"
-                src={selectedImage || "placeholder-image-url.jpg"} // Add a fallback image URL
+                className="img-fluid rounded shadow-sm border mb-4"
+                src={selectedImage || "placeholder-image-url.jpg"}
                 alt={detail.title || "Jacket Image"}
+                style={{ objectFit: "cover", width: "100%", height: "auto" }}
               />
-              <div className="d-flex flex-wrap mt-3">
-                {detail.images && detail.images.length > 0 ? (
+
+              {/* THUMBNAILS */}
+              <div className="d-flex flex-wrap">
+                {detail.images?.length > 0 ? (
                   detail.images.map((image, index) => (
                     <img
                       key={index}
                       src={image}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`img-thumbnail me-2 mb-2 ${
-                        selectedImage === image ? "border border-primary" : ""
+                      className={`img-thumbnail m-1 ${
+                        selectedImage === image ? "border-primary border-2" : ""
                       }`}
                       style={{
                         cursor: "pointer",
-                        width: "200px",
-                        height: "100px",
+                        width: "120px",
+                        height: "80px",
                         objectFit: "cover",
                       }}
                       onClick={() => handleImageSelect(image)}
@@ -94,46 +107,99 @@ const JacketDetail = () => {
                 )}
               </div>
             </div>
-            <div className="col">
-              <h1>{detail.title}</h1>
-              <p>{detail.description}</p>
-              <p>Material: {detail.material}</p>
-              <p>Rating: {detail.ratings}</p>
-              <p>Brand: {detail.bbrand}</p>
-              <p>Insulation Type: {detail.insulationType}</p>
-              <p>Category: {detail.category}</p>
-              <p>Price: $ {detail.price}</p>
-              <p>Colors: {detail.color.join(", ")}</p>
-              <p>Water Resistance: {detail.waterResistance ? "Yes" : "NO"}</p>
-              <p>{detail.stock > 5 ? "" : "Only a few Left! Hurry Up"}</p>
-            </div>
-            <h3>Quantity: {quantity}</h3>
-            <div className="d-flex align-items-center">
-              <button
-                className="btn btn-outline-secondary"
-                onClick={handleDecrease}
-                disabled={quantity <= 1}
-              >
-                -
-              </button>
-              <div className="mx-2 px-3 py-2 border rounded">{quantity}</div>
-              <button
-                className="btn btn-outline-secondary"
-                onClick={handleIncrease}
-              >
-                +
-              </button>
+
+            {/* DETAILS SECTION */}
+            <div className="col-lg-6">
+              <h2 className="mb-3">{detail.title}</h2>
+              <p className="text-muted mb-4">{detail.description}</p>
+
+              <ul className="list-unstyled">
+                <li>
+                  <strong>Material:</strong> {detail.material}
+                </li>
+                <li>
+                  <strong>Rating:</strong> {detail.ratings}
+                </li>
+                <li>
+                  <strong>Brand:</strong> {detail.bbrand}
+                </li>
+                <li>
+                  <strong>Insulation Type:</strong> {detail.insulationType}
+                </li>
+                <li>
+                  <strong>Category:</strong> {detail.category}
+                </li>
+                <li>
+                  <strong>Colors:</strong> {detail.color.join(", ")}
+                </li>
+                <li>
+                  <strong>Water Resistance:</strong>{" "}
+                  {detail.waterResistance ? "Yes" : "No"}
+                </li>
+                <li>
+                  <strong>Price:</strong> ${detail.price}
+                </li>
+              </ul>
+
+              {detail.stock <= 5 && (
+                <p className="text-danger fw-bold">
+                  Only a few left! Hurry Up!
+                </p>
+              )}
+
+              {/* QUANTITY CONTROLS */}
+              <div className="d-flex align-items-center my-3">
+                <h5 className="me-3 mb-0">Quantity:</h5>
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={handleDecrease}
+                  disabled={quantity <= 1}
+                >
+                  -
+                </button>
+                <span className="mx-3 px-3 py-2 border rounded">
+                  {quantity}
+                </span>
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={handleIncrease}
+                >
+                  +
+                </button>
+              </div>
+
+              {/* ACTION BUTTONS */}
+              <div className="d-flex gap-3 mt-4">
+                <button onClick={handleWish} className="btn btn-outline-dark">
+                  🤍 Add to Wishlist
+                </button>
+                <button
+                  onClick={handleCart}
+                  className="btn btn-info text-white"
+                >
+                  🛒 Buy Now
+                </button>
+              </div>
             </div>
           </div>
-          <button onClick={() => handleWish()} className="btn btn-dark me-5">
-            Add to Wishlist
-          </button>
-          <button onClick={() => handleCart()} className="btn btn-info ms-5">
-            Buy Now
-          </button>
         </div>
+
         <Footer />
       </div>
+
+      {/* TOAST */}
+      {showToast && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            zIndex: 1050,
+          }}
+        >
+          <Toast message={toastMessage} />
+        </div>
+      )}
     </>
   );
 };
