@@ -4,8 +4,7 @@ import { fetchJackets } from "../features/jackets/jacketSLice";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { addToWishlist } from "../features/wishlist/wishlistSlice";
-import { addToCart } from "../features/cart/cart";
+import { addToCart,addToWishlist } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast";
 import { motion } from "framer-motion";
@@ -16,24 +15,24 @@ const Jackets = () => {
   const [filterJack, setFilter] = useState([]);
   const { jackets, status, error } = useSelector((state) => state.jackets);
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.user);
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const divVarinats = {
-    initial:{
-      opacity:0,
-      y:50
+    initial: {
+      opacity: 0,
+      y: 50,
     },
     animate: (index) => ({
-      opacity:1,
-      y:0,
-      transition:{
-        delay:index*0.2
-      }
-    })
-
-  }
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: index * 0.2,
+      },
+    }),
+  };
   const brands = [
     "North Face",
     "Columbia",
@@ -52,7 +51,7 @@ const Jackets = () => {
     "Carhartt",
   ];
 
-  console.log(jackets);
+  // console.log(jackets);
   useEffect(() => {
     dispatch(fetchJackets());
   }, [dispatch]);
@@ -75,12 +74,12 @@ const Jackets = () => {
   };
 
   const handleWish = (wish) => {
-    dispatch(addToWishlist(wish));
+    dispatch(addToWishlist({id:user._id,data:{proID:wish._id,quantity:1}}));
     triggerToast(`<b>${wish.title}</b> was Added to Wishlist!`);
   };
 
   const handleCart = (item) => {
-    dispatch(addToCart(item));
+    dispatch(addToCart({id:user._id,data:{proID:item._id,quantity:1}}));
     triggerToast(`<b>${item.title}</b> was Added to Wishlist!`);
   };
   const handleBrands = (val) => {
@@ -213,16 +212,16 @@ const Jackets = () => {
               </p>
             )}
 
-            {paginatedJackets.map((b,index) => (
+            {paginatedJackets.map((b, index) => (
               <div key={b._id} className="col-md-4">
                 <motion.div
-                variants={divVarinats}
-                initial="initial"
-                whileInView={"animate"}
-                viewport={{
-                  once:true
-                }}
-                custom={index}
+                  variants={divVarinats}
+                  initial="initial"
+                  whileInView={"animate"}
+                  viewport={{
+                    once: true,
+                  }}
+                  custom={index}
                   className="card h-100"
                   style={{
                     border: "1px solid #ddd",

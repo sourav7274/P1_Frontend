@@ -2,35 +2,40 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { removeFromWishList } from "../features/wishlist/wishlistSlice";
-import { addToCart } from "../features/user/userSlice";
+import {
+  addtoCartFWish,
+  deleteItemFWishlist,
+} from "../features/user/userSlice";
 
 const Wishlist = () => {
   const { user } = useSelector((state) => state.user);
-  const wishlist = user.wishlist;
+  const wishlist = user?.wishlist;
   const dispatch = useDispatch();
 
-  console.log(wishlist)
   const handleClick = (abc) => {
-    dispatch(removeFromWishList(abc));
+    dispatch(deleteItemFWishlist({ id: user._id, data: { proID: abc } }));
   };
 
   const handleCart = (item) => {
-    dispatch(removeFromWishList(item._id));
-    dispatch(addToCart({ id: user._id, data: { ...item, quantity: 1 } }));
+    dispatch(
+      addtoCartFWish({
+        id: user._id,
+        data: { ...item, quantity: item.quantity },
+      })
+    );
   };
 
   return (
     <>
       <Header />
-      <div className="d-flex flex-column min-vh-100">
+      <div className="d-flex flex-column min-vh-100 bg-light">
         <div className="container mt-5 flex-grow-1">
-          {wishlist.length === 0 ? (
+          {wishlist && wishlist.length === 0 ? (
             <div className="text-center">
               <h3>No Items in Wishlist</h3>
               <Link
                 className="btn mt-3"
-                to="/"
+                to="/home"
                 style={{ color: "white", background: "black" }}
                 onMouseEnter={(e) => {
                   e.target.style.color = "white";
@@ -45,35 +50,35 @@ const Wishlist = () => {
               </Link>
             </div>
           ) : (
-            <div>
-              <ul className="list-group">
-                <div className="row">
-                  {wishlist.map((item) => (
-                    <div key={item._id} className="col-md-4 col-sm-6 mb-4">
-                      <div className="card h-100">
-                        <div className="card-body">
-                          <h5 className="card-title">
-                            {item.proID.name || item.proID.title}
-                          </h5>
-                          <p className="card-text">Quantity: {item.quantity}</p>
-                          <button
-                            onClick={() => handleClick(item._id)}
-                            className="btn btn-danger btn-block me-5"
-                          >
-                            Remove from Wishlist
-                          </button>
-                          <button
-                            onClick={() => handleCart(item)}
-                            className="btn btn-primary btn-block"
-                          >
-                            Add To Cart
-                          </button>
-                        </div>
+            <div className="row">
+              {wishlist?.map((item) => (
+                <div key={item._id} className="col-md-4 col-sm-6 mb-4">
+                  <div className="card h-100 shadow-sm">
+                    <div className="card-body d-flex flex-column justify-content-between">
+                      <h5 className="card-title">
+                        {item.proID.name || item.proID.title}
+                      </h5>
+                      <p className="card-text mb-3">
+                        Quantity: {item.quantity}
+                      </p>
+                      <div className="d-flex justify-content-between mt-auto">
+                        <button
+                          onClick={() => handleClick(item.proID._id)}
+                          className="btn btn-outline-danger w-50 me-2"
+                        >
+                          Remove
+                        </button>
+                        <button
+                          onClick={() => handleCart(item)}
+                          className="btn btn-dark w-50"
+                        >
+                          Add To Cart
+                        </button>
                       </div>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </ul>
+              ))}
             </div>
           )}
         </div>

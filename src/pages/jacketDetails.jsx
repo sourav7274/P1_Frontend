@@ -2,8 +2,7 @@ import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
-import { addToCart } from "../features/cart/cart";
-import { addToWishlist } from "../features/wishlist/wishlistSlice";
+import { addToCart, addToWishlist } from "../features/user/userSlice";
 import { fetchJackets } from "../features/jackets/jacketSLice";
 import { useEffect, useState } from "react";
 
@@ -11,10 +10,11 @@ const JacketDetail = () => {
   const { id } = useParams(); // Destructure 'id' directly
   const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(""); // Fallback to an empty string
-
+  const { user } = useSelector((state) => state.user);
   useEffect(() => {
     dispatch(fetchJackets());
   }, [dispatch]);
+  const [quantity, setQuantity] = useState(1);
   const jackets = useSelector((state) => state.jackets.jackets);
   const detail = jackets?.find((item) => item._id === id);
 
@@ -25,7 +25,23 @@ const JacketDetail = () => {
   const handleImageSelect = (image) => {
     setSelectedImage(image);
   };
+  const handleDecrease = () => setQuantity(quantity - 1);
+  const handleIncrease = () => setQuantity(quantity + 1);
+  const handleWish = () => {
+    dispatch(
+      addToWishlist({ id: user._id, data: { proID: detail._id, quantity } })
+    );
+    setQuantity(0);
+    // triggerToast(`<b>${val.title}</b> was Added to Wishlist!`);
+  };
 
+  const handleCart = () => {
+    dispatch(
+      addToCart({ id: user._id, data: { proID: detail._id, quantity } })
+    );
+    setQuantity(0);
+    // triggerToast(`<b>${item.title}</b> was Added to Cart!`);
+  };
   if (!detail) {
     return (
       <div className="d-flex flex-column min-vh-100">
@@ -91,17 +107,28 @@ const JacketDetail = () => {
               <p>Water Resistance: {detail.waterResistance ? "Yes" : "NO"}</p>
               <p>{detail.stock > 5 ? "" : "Only a few Left! Hurry Up"}</p>
             </div>
+            <h3>Quantity: {quantity}</h3>
+            <div className="d-flex align-items-center">
+              <button
+                className="btn btn-outline-secondary"
+                onClick={handleDecrease}
+                disabled={quantity <= 1}
+              >
+                -
+              </button>
+              <div className="mx-2 px-3 py-2 border rounded">{quantity}</div>
+              <button
+                className="btn btn-outline-secondary"
+                onClick={handleIncrease}
+              >
+                +
+              </button>
+            </div>
           </div>
-          <button
-            onClick={() => dispatch(addToWishlist(detail))}
-            className="btn btn-dark me-5"
-          >
+          <button onClick={() => handleWish()} className="btn btn-dark me-5">
             Add to Wishlist
           </button>
-          <button
-            onClick={() => dispatch(addToCart(detail))}
-            className="btn btn-info ms-5"
-          >
+          <button onClick={() => handleCart()} className="btn btn-info ms-5">
             Buy Now
           </button>
         </div>

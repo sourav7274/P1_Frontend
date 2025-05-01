@@ -1,32 +1,38 @@
-import Header from "../components/Header";
+import Header from "../components/Header"; 
 import Footer from "../components/Footer";
 import { useDispatch, useSelector } from "react-redux";
-import { removeFromCart } from "../features/cart/cart";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { makeOrder } from "../features/user/userSlice";
+import { deleteItemFCart } from "../features/user/userSlice";
 
 const Cart = () => {
   const [tprice, setPrice] = useState();
   const [dis, setDis] = useState(false);
   const [final, setFinal] = useState([]);
   const { user } = useSelector((state) => state.user);
-  const cart = user.cart;
-  const address = user.address[0];
+  const cart = user?.cart;
+  const address = user?.address[0];
   const dispatch = useDispatch();
   const fTotal = (data) => {
-    return data.reduce((acc, curr) => (acc += curr.proID.price), 0);
+    if (data) {
+      return data.reduce((acc, curr) => (acc += curr.proID.price), 0);
+    }
   };
-  console.log(user.address[0]);
+  // console.log(user);
   useEffect(() => {
     const total = fTotal(cart);
     setPrice(total);
   });
   const handleClick = (id) => {
-    dispatch(removeFromCart(id));
+    dispatch(deleteItemFCart({ id: user._id, data:{ proID: id} }));
   };
-
   const handleBuy = () => {
-    setFinal(cart);
+    const finalCart = cart.reduce((acc, curr) => {
+      acc.push({ itemId: curr.proID._id, quantity: curr.quantity });
+      return acc;
+    }, []);
+    dispatch(makeOrder({ userId: user._id, items: finalCart }));
     setDis(true);
 
     // console.log(final)
@@ -37,29 +43,60 @@ const Cart = () => {
       <Header />
       <div className="d-flex flex-column min-vh-100">
         <div className="container mt-5 flex-grow-1">
-          {cart.length === 0 ? (
-            <div className="text-center">
-              <h3>No Items in Cart</h3>
-              <Link
-                className="btn mt-3"
-                to="/"
-                style={{ color: "white", background: "black" }}
-                onMouseEnter={(e) => {
-                  e.target.style.color = "white";
-                  e.target.style.backgroundColor = "grey";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.color = "white";
-                  e.target.style.backgroundColor = "black";
-                }}
-              >
-                Shop Now
-              </Link>
+          {cart?.length === 0 ? (
+            <div className="container py-5">
+              <div className="text-center mb-5">
+                <h3>No Items in Cart</h3>
+                <Link
+                  className="btn btn-dark mt-3"
+                  to="/"
+                  onMouseEnter={(e) => {
+                    e.target.classList.remove("btn-dark");
+                    e.target.classList.add("btn-secondary");
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.classList.remove("btn-secondary");
+                    e.target.classList.add("btn-dark");
+                  }}
+                >
+                  Shop Now
+                </Link>
+              </div>
+
+              <div className="mt-5">
+                <h1 className="mb-4 text-center">Recent Order History</h1>
+                <div className="row">
+                  {user.orderHistory.map((history) => (
+                    <div key={history._id} className="col-md-6 mb-4">
+                      <div className="card shadow-sm">
+                        <div className="card-body">
+                          <h5 className="card-title">
+                            Order ID: {history._id}
+                          </h5>
+                          {history.items.map((item, index) => (
+                            <div
+                              key={index}
+                              className="mb-3 border-bottom pb-2"
+                            >
+                              <p className="mb-1 fw-bold">
+                                {item.itemId.name || item.itemId.title}
+                              </p>
+                              <p className="mb-0 text-muted">
+                                Quantity: {item.quantity}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
             <main className="container py-4">
               <ul className="list-group">
-                {cart.map((item) => (
+                {cart?.map((item) => (
                   <li
                     key={item._id}
                     className="list-group-item d-flex justify-content-between align-items-center"
@@ -70,7 +107,7 @@ const Cart = () => {
                       {item.quantity}
                     </div>
                     <button
-                      onClick={() => handleClick(item._id)}
+                      onClick={() => handleClick(item.proID._id)}
                       className="btn btn-danger"
                     >
                       Remove from Cart
@@ -105,7 +142,8 @@ const Cart = () => {
                       >
                         <div>
                           <b>Name: </b>
-                          {item.proID.title || item.proID.name} <b>Quantity: </b>
+                          {item.proID.title || item.proID.name}{" "}
+                          <b>Quantity: </b>
                           {item.quantity}
                         </div>
                       </li>
@@ -118,7 +156,12 @@ const Cart = () => {
                 {address ? (
                   <>
                     {" "}
-                    <h3>Dispatched to : <span className="text-secondary">{address.addName} address</span> </h3>
+                    <h3>
+                      Dispatched to :{" "}
+                      <span className="text-secondary">
+                        {address.addName} address
+                      </span>{" "}
+                    </h3>
                     <div className="card">
                       <div className="card-body">
                         <p>

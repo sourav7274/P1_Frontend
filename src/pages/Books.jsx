@@ -4,9 +4,8 @@ import { fetchBooks } from "../features/books/bookSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { addToWishlist } from "../features/wishlist/wishlistSlice";
-import { addToCart } from "../features/cart/cart";
 import { useNavigate } from "react-router-dom";
+import { addToCart, addToWishlist } from "../features/user/userSlice";
 import "./some.css";
 import Toast from "../components/Toast";
 import { motion } from "framer-motion";
@@ -15,6 +14,7 @@ const Books = () => {
   const dispatch = useDispatch();
   const { books, status, error } = useSelector((state) => state.books);
   const [filteredBooks, setFilteredBooks] = useState([]);
+  const { user } = useSelector((state) => state.user);
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [toastMesage, setToast] = useState("");
   const [toastDiis, setTDis] = useState(false);
@@ -60,13 +60,17 @@ const Books = () => {
   };
 
   const handleWish = (val) => {
-    dispatch(addToWishlist(val));
+    dispatch(
+      addToWishlist({ id: user._id, data: { proID: val._id, quantity: 1 } })
+    );
     triggerToast(`<b>${val.title}</b> has been added to your cart`);
     setTDis(true);
   };
 
   const handleCart = (item) => {
-    dispatch(addToCart(item));
+    dispatch(
+      addToCart({ id: user._id, data: { proID: item._id, quantity: 1 } })
+    );
     triggerToast(`<b>${item.title}</b> has been added to your cart`);
     setTDis(true);
   };

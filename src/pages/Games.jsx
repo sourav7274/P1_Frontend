@@ -6,7 +6,11 @@ import { fetchGames } from "../features/games/gameSlice";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast";
-import { addToCart, addToWishlist, getUserByID } from "../features/user/userSlice";
+import {
+  addToCart,
+  addToWishlist,
+  getUserByID,
+} from "../features/user/userSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Games = () => {
@@ -79,15 +83,17 @@ const Games = () => {
   useEffect(() => {
     dispatch(fetchGames());
   }, [dispatch]);
-  
+
   const handleWish = (val) => {
-    dispatch(addToWishlist({ id: user._id, data: { proID: val._id, quantity: 1 } }));
+    dispatch(
+      addToWishlist({ id: user._id, data: { proID: val._id, quantity: 1 } })
+    );
     triggerToast(`<b>${val.title}</b> was Added to Wishlist!`);
   };
 
   const handleCart = (item) => {
     dispatch(
-      addToCart({ id: user._id, data: { proID: item._id, quantity: 1 } })
+      addToCart({ id: user?._id, data: { proID: item._id, quantity: 1 } })
     );
     triggerToast(`<b>${item.title}</b> was Added to Cart!`);
   };

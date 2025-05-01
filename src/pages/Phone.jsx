@@ -4,14 +4,14 @@ import { fetchPhones } from "../features/phones/phoneSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { addToWishlist } from "../features/wishlist/wishlistSlice";
-import { addToCart } from "../features/cart/cart";
+import { addToCart,addToWishlist } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast";
 import { motion } from "framer-motion";
 
 const Books = () => {
   const [color, setColor] = useState("All");
+  const { user } = useSelector((state) => state.user);
   const [filterPhone, setFilter] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
@@ -47,7 +47,7 @@ const Books = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { phones, status, error } = useSelector((state) => state.phone);
-  console.log(phones);
+  // console.log(phones);
   useEffect(() => {
     dispatch(fetchPhones());
   }, [dispatch]);
@@ -72,11 +72,11 @@ const Books = () => {
     }
   };
   const handleWish = (wish) => {
-    dispatch(addToWishlist(wish));
+    dispatch(addToWishlist({id:user._id,data:{proID:wish._id,quantity:1}}));
     triggerToast(`<b>${wish.title}</b> was Added to Wishlist!`);
   };
   const handleCart = (item) => {
-    dispatch(addToCart(item));
+    dispatch(addToCart({id:user._id,data:{proID:item._id,quantity:1}}));
     triggerToast(`<b>${item.title}</b> was Added to Wishlist!`);
   };
 
@@ -120,7 +120,9 @@ const Books = () => {
                       </option>
                     ))}
                   </select>
-                  <p className="mt-2 text-secondary">{filterPhone.length} Products </p>
+                  <p className="mt-2 text-secondary">
+                    {filterPhone.length} Products{" "}
+                  </p>
                 </div>
               </li>
               <li>

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import "./Header.css"; // Custom CSS file for styling
 import { Link, NavLink } from "react-router-dom";
-import { getUserByID } from "../features/user/userSlice";
+
 
 const Header = () => {
   const { user } = useSelector((state) => state.user);

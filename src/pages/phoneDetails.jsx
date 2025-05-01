@@ -2,9 +2,7 @@ import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
-import { addToCart } from "../features/cart/cart";
-import { addToWishlist } from "../features/wishlist/wishlistSlice";
-import { fetchPhones } from "../features/phones/phoneSlice";
+import { addToCart, addToWishlist } from "../features/user/userSlice";
 import { useEffect } from "react";
 import { useState } from "react";
 
@@ -13,9 +11,7 @@ const JacketDetail = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(0);
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchPhones());
-  }, []);
+  const { user } = useSelector((state) => state.user);
   const handleDecrease = () => setQuantity(quantity - 1);
   const handleIncrease = () => setQuantity(quantity + 1);
   const phones = useSelector((state) => state.phone.phones);
@@ -23,6 +19,21 @@ const JacketDetail = () => {
   // console.log(detail)
   const handleImageSelect = (image) => {
     setSelectedImage(image);
+  };
+  const handleWish = () => {
+    dispatch(
+      addToWishlist({ id: user._id, data: { proID: detail._id, quantity: 1 } })
+    );
+    setQuantity(0);
+    // triggerToast(`<b>${val.title}</b> was Added to Wishlist!`);
+  };
+
+  const handleCart = () => {
+    dispatch(
+      addToCart({ id: user._id, data: { proID: detail._id, quantity: 1 } })
+    );
+    setQuantity(0);
+    // triggerToast(`<b>${item.title}</b> was Added to Cart!`);
   };
   return (
     <>
@@ -103,6 +114,7 @@ const JacketDetail = () => {
             <p>
               Released On: {new Date(detail.releaseDate).toLocaleDateString()}
             </p>
+            <h3>Quantity:{" "}{quantity}</h3>
             <div className="d-flex align-items-center">
               <button
                 className="btn btn-outline-secondary"
@@ -121,13 +133,13 @@ const JacketDetail = () => {
             </div>
             <div className="d-flex flex-wrap gap-2 mt-4">
               <button
-                onClick={() => dispatch(addToWishlist({ ...detail, quantity }))}
+                onClick={() => handleWish()}
                 className="btn btn-dark me-5"
               >
                 Add to Wishlist
               </button>
               <button
-                onClick={() => dispatch(addToCart({ ...detail, quantity }))}
+                onClick={() => handleCart()}
                 className="btn btn-info ms-5"
               >
                 Buy Now
