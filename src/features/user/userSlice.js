@@ -8,11 +8,11 @@ export const localUser =
 
 export const getUser = createAsyncThunk("get/user", async (data) => {
   const response = await axios.post(
-    `http://localhost:5000/login`,
+    `https://p1-backend.vercel.app/login`,
     data
   );
   const result = await response.data;
-  localStorage.setItem('token',result.token)
+  localStorage.setItem("token", result.token);
   sessionStorage.setItem("user", JSON.stringify(result.user));
   return response.data.user;
 });
@@ -73,7 +73,7 @@ export const deleteItemFWishlist = createAsyncThunk(
 );
 
 export const postUser = createAsyncThunk("post/user", async (data) => {
-  const response = await axios.post("http://localhost:5000/user", data);
+  const response = await axios.post("https://p1-backend.vercel.app/user", data);
   const result = await response.data;
   console.log(result.message);
   return result.newUser;

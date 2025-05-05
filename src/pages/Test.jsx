@@ -1,15 +1,18 @@
-import axios from 'axios';
+import axios from "axios";
 
 const Test = () => {
   const handleCheckDashboard = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     // console.log(token)
     try {
-      const response = await axios.get('http://localhost:5000/dashboard', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "https://p1-backend.vercel.app/dashboard",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       alert(response.data.message); // should show: hello User XYZ
     } catch (err) {
