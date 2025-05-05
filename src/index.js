@@ -16,6 +16,8 @@ import GameDetail from "./pages/gameDetails";
 import JacketDetail from "./pages/jacketDetails";
 import User from "./pages/User";
 import Login from "./pages/Login";
+import Test from "./pages/Test";
+import Protected from "./components/Protected";
 
 const router = createBrowserRouter([
   {
@@ -64,12 +66,20 @@ const router = createBrowserRouter([
   },
   {
     path: "/user",
-    element: <User />,
+    element: (
+      <Protected >
+        <User/>
+      </Protected>
+    ),
   },
   {
     path: "/home",
     element: <App />,
   },
+  {
+    path:"/test",
+    element: <Test/>
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

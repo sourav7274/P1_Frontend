@@ -5,6 +5,8 @@ import { useState } from "react";
 import { updateUser, deleteAddress } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import { localUser } from "../features/user/userSlice";
+import { useEffect } from "react";
+import { motion } from "framer-motion";
 
 const User = () => {
   const dispatch = useDispatch();
@@ -12,6 +14,9 @@ const User = () => {
   const userState = useSelector((state) => state.user);
   const user = userState.user || localUser;
   const [dis, setDis] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState("checking"); // clearer naming
+  const [seconds, setSeconds] = useState(0);
+
   const [newAddress, setAddress] = useState({
     houseNo: "",
     street: "",
@@ -21,10 +26,26 @@ const User = () => {
     country: "",
     landmark: "",
   });
-  // console.log(localUser);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userValid = user && user.name !== undefined;
+
+    if (!token || !userValid) {
+      setIsAuthenticated("unauthenticated");
+      setSeconds(2);
+      const timeout = setTimeout(() => {
+        navigate("/"); // Changed to "/login" for clarity
+      }, 3000);
+
+      return () => clearTimeout(timeout);
+    } else {
+      setIsAuthenticated("authenticated");
+    }
+  }, [user, navigate]);
+
   const handleChange = (val) => {
     const { name, value } = val.target;
-
     setAddress((prev) => ({
       ...prev,
       [name]: value,
@@ -55,6 +76,72 @@ const User = () => {
     dispatch(deleteAddress({ id: user._id, addId: id }));
   };
 
+  useEffect(() => {
+    if (seconds <= 0) return;
+    const interval = setInterval(() => {
+      setSeconds((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [seconds]);
+  const formatTime = (s) => {
+    const mins = String(Math.floor(s / 60)).padStart(2, "0");
+    const secs = String(s % 60).padStart(2, "0");
+    return `${mins}:${secs}`;
+  };
+
+  // Loading state while checking authentication
+  if (isAuthenticated === "checking") {
+    return (
+      <>
+        <Header />
+        <div className="d-flex justify-content-center align-items-center min-vh-100">
+          <h1>Checking Authentication...</h1>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  // Not authenticated state
+  if (isAuthenticated === "unauthenticated") {
+    return (
+      <>
+        <Header />
+        <div className="d-flex flex-column min-vh-100 bg-danger bg-gradient text-white">
+          <div className="flex-grow-1 d-flex justify-content-center align-items-center px-3">
+            <motion.div
+              className="text-center p-4 rounded-4 shadow-lg"
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.4)",
+                backdropFilter: "blur(8px)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+              }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <h1 className="h3 fw-semibold mb-3">Please login again.</h1>
+              <p className="mb-4">
+                Redirecting to the homepage in{" "}
+                <span className="fw-bold">{formatTime(seconds)}</span>
+              </p>
+              <motion.div
+                className="spinner-border text-white"
+                style={{ width: "4rem", height: "4rem", borderWidth: "0.4rem" }}
+                role="status"
+                initial={{ rotate: 0 }}
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+              />
+            </motion.div>
+          </div>
+          <Footer className="mt-auto" />
+        </div>
+      </>
+    );
+  }
+
+  // Authenticated state - main content
   return (
     <>
       <Header />
@@ -128,10 +215,7 @@ const User = () => {
           ) : (
             <div className="container text-center mt-5">
               <p className="text-muted">No Address Saved</p>
-              <button
-                className="btn btn-primary"
-                onClick={() => setDis(!dis)}
-              >
+              <button className="btn btn-primary" onClick={() => setDis(!dis)}>
                 {dis ? "Cancel" : "Add Address"}
               </button>
             </div>
