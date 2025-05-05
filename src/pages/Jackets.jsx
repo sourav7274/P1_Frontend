@@ -171,7 +171,7 @@ const Jackets = () => {
                 >
                   <option value=" ">All Brands</option>
                   {brands.map((br) => (
-                    <optioN value={br}>{br}</optioN>
+                    <option key={br} value={br}>{br}</option>
                   ))}
                 </select>
               </div>
