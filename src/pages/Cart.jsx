@@ -260,7 +260,8 @@ const Cart = () => {
                                 <strong>City:</strong> {history.address[0].city}
                               </p>
                               <p>
-                                <strong>State:</strong> {history.address[0].state}
+                                <strong>State:</strong>{" "}
+                                {history.address[0].state}
                               </p>
                               <p>
                                 <strong>Country:</strong>{" "}
