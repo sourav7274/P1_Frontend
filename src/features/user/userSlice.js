@@ -8,7 +8,7 @@ export const localUser =
 
 export const getUser = createAsyncThunk("get/user", async (data) => {
   const response = await axios.post(
-    `https://p1-backend.vercel.app/login`,
+    `http://localhost:5000/login`,
     data
   );
   const result = await response.data;
@@ -18,13 +18,13 @@ export const getUser = createAsyncThunk("get/user", async (data) => {
 });
 export const getUserByID = createAsyncThunk("get/userId", async (id) => {
   const response = await axios.get(
-    `https://p1-backend.vercel.app/userId/${id}`
+    `http://localhost:5000/userId/${id}`
   );
   return response.data.user[0];
 });
 export const makeOrder = createAsyncThunk("/post/order", async (data) => {
   const response = await axios.post(
-    `https://p1-backend.vercel.app/order`,
+    `http://localhost:5000/order`,
     data
   );
   // console.log(response.data);
@@ -32,7 +32,7 @@ export const makeOrder = createAsyncThunk("/post/order", async (data) => {
 });
 
 // export const getOrders = createAsyncThunk("get/orders", async (id) => {
-//   const response = await axios.get(`https://p1-backend.vercel.app/orderHistory/${id}`);
+//   const response = await axios.get(`http://localhost:5000/orderHistory/${id}`);
 //   // console.log(response.data);
 // });
 
@@ -41,7 +41,7 @@ export const addtoCartFWish = createAsyncThunk(
   async ({ id, data }) => {
     console.log(data);
     const response = await axios.put(
-      `https://p1-backend.vercel.app/${id}/cartFWish`,
+      `http://localhost:5000/${id}/cartFWish`,
       data
     );
     return response.data.user;
@@ -52,7 +52,7 @@ export const deleteItemFCart = createAsyncThunk(
   "delete/cart",
   async ({ id, data }) => {
     const response = await axios.put(
-      `https://p1-backend.vercel.app/${id}/cart`,
+      `http://localhost:5000/${id}/cart`,
       data
     );
     // console.log(response.data);
@@ -65,7 +65,7 @@ export const deleteItemFWishlist = createAsyncThunk(
   async ({ id, data }) => {
     console.log(data);
     const response = await axios.put(
-      `https://p1-backend.vercel.app/${id}/wishlist`,
+      `http://localhost:5000/${id}/wishlist`,
       data
     );
     return response.data.user;
@@ -73,7 +73,10 @@ export const deleteItemFWishlist = createAsyncThunk(
 );
 
 export const postUser = createAsyncThunk("post/user", async (data) => {
-  const response = await axios.post("https://p1-backend.vercel.app/user", data);
+  const response = await axios.post(
+    "http://localhost:5000/user",
+    data
+  );
   const result = await response.data;
   console.log(result.message);
   return result.newUser;
@@ -83,7 +86,7 @@ export const updateUser = createAsyncThunk(
   "update/user",
   async ({ id, data }) => {
     const response = await axios.put(
-      `https://p1-backend.vercel.app/user/${id}`,
+      `http://localhost:5000/user/${id}`,
       data
     );
     const result = await response.data;
@@ -96,7 +99,7 @@ export const addToWishlist = createAsyncThunk(
   "add/wish",
   async ({ id, data }) => {
     const response = await axios.post(
-      `https://p1-backend.vercel.app/user/${id}/wishlist`,
+      `http://localhost:5000/user/${id}/wishlist`,
       data
     );
     // console.log(response.data.user)
@@ -106,7 +109,7 @@ export const addToWishlist = createAsyncThunk(
 
 export const addToCart = createAsyncThunk("add/cart", async ({ id, data }) => {
   const response = await axios.post(
-    `https://p1-backend.vercel.app/user/${id}/cart`,
+    `http://localhost:5000/user/${id}/cart`,
     data
   );
   return response.data.user;
@@ -115,12 +118,12 @@ export const addToCart = createAsyncThunk("add/cart", async ({ id, data }) => {
 export const deleteAddress = createAsyncThunk(
   "delete/address",
   async ({ id, addId }) => {
-    console.log(id, addId);
+    // console.log(id, addId);
     const response = await axios.put(
-      `https://p1-backend.vercel.app/deleteAddress/${id}`,
+      `http://localhost:5000/deleteAddress/${id}`,
       { addId }
     );
-    console.log(response.data.message);
+    // console.log(response.data.message);
     return response.data.user;
   }
 );

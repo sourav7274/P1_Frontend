@@ -1,247 +1,296 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { makeOrder } from "../features/user/userSlice";
-import { deleteItemFCart } from "../features/user/userSlice";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { makeOrder, deleteItemFCart } from "../features/user/userSlice";
 
 const Cart = () => {
-  const [tprice, setPrice] = useState();
+  const [tprice, setPrice] = useState(0);
   const [dis, setDis] = useState(false);
   const [final, setFinal] = useState([]);
+  const [address, setAddress] = useState(null);
+  const [addressDis, setAddressDis] = useState("");
   const { user } = useSelector((state) => state.user);
-  const cart = user?.cart;
-  const address = user?.address[0];
+  const cart = user?.cart || [];
+  const allAddress = user?.address || [];
   const dispatch = useDispatch();
+
   const fTotal = (data) => {
-    if (data) {
-      return data.reduce((acc, curr) => (acc += curr.proID.price), 0);
-    }
+    return data.reduce(
+      (acc, curr) => acc + curr.proID.price * curr.quantity,
+      0
+    );
   };
-  // console.log(user);
+
   useEffect(() => {
-    const total = fTotal(cart);
-    setPrice(total);
-  });
+    setPrice(fTotal(cart));
+  }, [cart]);
+
   const handleClick = (id) => {
     dispatch(deleteItemFCart({ id: user._id, data: { proID: id } }));
   };
-  const handleBuy = () => {
-    const finalCart = cart.reduce((acc, curr) => {
-      acc.push({ itemId: curr.proID._id, quantity: curr.quantity });
-      return acc;
-    }, []);
-    dispatch(makeOrder({ userId: user._id, items: finalCart }));
-    setDis(true);
 
-    // console.log(final)
+  const handleBuy = () => {
+    const finalCart = cart.map((item) => ({
+      itemId: item.proID._id,
+      quantity: item.quantity,
+    }));
+    dispatch(
+      makeOrder({
+        userId: user._id,
+        items: finalCart,
+        total: Number(tprice.toFixed(2)),
+        address,
+      })
+    );
+    setFinal(cart);
+    setDis(true);
   };
 
   return (
     <>
       <Header />
-      <div className="d-flex flex-column min-vh-100">
-        <div className="container mt-5 flex-grow-1">
-          {cart?.length === 0 ? (
-            <div className="container py-5">
-              <div className="text-center mb-5">
-                <h3>No Items in Cart</h3>
-                <Link
-                  className="btn btn-dark mt-3"
-                  to="/"
-                  onMouseEnter={(e) => {
-                    e.target.classList.remove("btn-dark");
-                    e.target.classList.add("btn-secondary");
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.classList.remove("btn-secondary");
-                    e.target.classList.add("btn-dark");
-                  }}
-                >
-                  Shop Now
-                </Link>
-              </div>
-
-              <div className="mt-5">
-                <h1 className="mb-4 text-center">Recent Order History</h1>
-                <div className="row">
-                  <div className="container mt-5 flex-grow-1">
-                    <div className="order-history-masonry">
-                      {[...user.orderHistory].reverse().map((history) => (
-                        <div key={history._id} className="mb-4">
-                          <div className="card shadow-sm">
-                            <div className="card-body">
-                              <h5 className="card-title">
-                                Order ID: {history._id}
-                              </h5>
-                              {history.items.map((item, index) => (
-                                <div
-                                  key={index}
-                                  className="mb-3 border-bottom pb-2"
-                                >
-                                  <p className="mb-1 fw-bold">
-                                    {item.itemId.name || item.itemId.title}
-                                  </p>
-                                  <p className="mb-0 text-muted">
-                                    Quantity: {item.quantity}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* {[...user.orderHistory].reverse().map((history) => (
-                    <div key={history._id} className="col-md-6 mb-4">
-                      <div className="card shadow-sm h-100">
-                        <div className="card-body">
-                          <h5 className="card-title">
-                            Order ID: {history._id}
-                          </h5>
-                          {history.items.map((item, index) => (
-                            <div
-                              key={index}
-                              className="mb-3 border-bottom pb-2"
-                            >
-                              <p className="mb-1 fw-bold">
-                                {item.itemId.name || item.itemId.title}
-                              </p>
-                              <p className="mb-0 text-muted">
-                                Quantity: {item.quantity}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ))} */}
-                </div>
-              </div>
+      <div
+        className="d-flex flex-column min-vh-100"
+        style={{ margin: 0, padding: 0 }}
+      >
+        <div className="container my-5 flex-grow-1 d-flex flex-column">
+          {cart.length === 0 ? (
+            <div className="text-center py-5">
+              <h3 className="mb-3">🛒 Your Cart is Empty</h3>
+              <Link to="/home" className="btn btn-dark">
+                Shop Now
+              </Link>
             </div>
           ) : (
-            <main className="container py-4">
-              <ul className="list-group">
-                {cart?.map((item) => (
-                  <li
-                    key={item._id}
-                    className="list-group-item d-flex justify-content-between align-items-center"
-                  >
-                    <div>
-                      <b>Name: </b>
-                      {item.proID.title || item.proID.name} <b>Quantity: </b>
-                      {item.quantity}
-                    </div>
-                    <button
-                      onClick={() => handleClick(item.proID._id)}
-                      className="btn btn-danger"
+            <>
+              <div className="card p-4 shadow-sm mb-4">
+                <h4 className="mb-3">Cart Items</h4>
+                <ul className="list-group mb-3">
+                  {cart.map((item) => (
+                    <li
+                      key={item._id}
+                      className="list-group-item d-flex justify-content-between align-items-center"
                     >
-                      Remove from Cart
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <p>Total: $ {tprice}</p>
-              <button onClick={handleBuy} className="btn btn-primary">
-                Check Out
-              </button>
-              <div
-                className="text-center mt-5"
-                style={{
-                  display: address && address.length == 0 ? "block" : "none",
-                }}
-              >
-                <p className="text-danger mb-4">No Address Saved</p>
-                <Link to="/user" className="btn btn-primary">
-                  Make One Here
-                </Link>
+                      <div>
+                        <strong>Name:</strong>{" "}
+                        {item.proID.title || item.proID.name}{" "}
+                        <strong>Quantity:</strong> {item.quantity}
+                      </div>
+                      <button
+                        onClick={() => handleClick(item.proID._id)}
+                        className="btn btn-outline-danger btn-sm"
+                      >
+                        Remove
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <p>
+                  <strong>Total:</strong> ${tprice.toFixed(2)}
+                </p>
+                <div className="mb-3">
+                  <label htmlFor="addressSelect" className="form-label">
+                    Select Address
+                  </label>
+                  <select
+                    id="addressSelect"
+                    className="form-select"
+                    onChange={(e) =>
+                      setAddress(
+                        allAddress.find((add) => add._id == e.target.value)
+                      )
+                    }
+                  >
+                    <option value="">Select Address</option>
+                    {allAddress.map((addrs) => (
+                      <option key={addrs._id} value={addrs._id}>
+                        {addrs.addName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  onClick={handleBuy}
+                  className="btn btn-primary w-100"
+                  disabled={!address || cart.length === 0}
+                >
+                  Check Out
+                </button>
               </div>
 
-              <div style={{ display: dis ? "block" : "none" }}>
-                <div className="text-center">
-                  <h1>Summary</h1>
-                  <ul className="list-group">
+              {allAddress.length === 0 && (
+                <div className="text-center mt-4">
+                  <p className="text-danger mb-2">No Address Saved</p>
+                  <Link to="/user" className="btn btn-primary">
+                    Add Address
+                  </Link>
+                </div>
+              )}
+
+              {dis && (
+                <div className="card p-4 shadow-sm mb-4">
+                  <h2 className="text-center mb-4">Order Summary</h2>
+                  <ul className="list-group mb-3">
                     {final.map((item) => (
                       <li
                         key={item._id}
                         className="list-group-item d-flex justify-content-between align-items-center"
                       >
                         <div>
-                          <b>Name: </b>
+                          <strong>Name:</strong>{" "}
                           {item.proID.title || item.proID.name}{" "}
-                          <b>Quantity: </b>
-                          {item.quantity}
+                          <strong>Quantity:</strong> {item.quantity}
                         </div>
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-4">
-                    <b>Total: $ {fTotal(final)}</b>
+                  <p>
+                    <strong>Total:</strong> ${tprice.toFixed(2)}
                   </p>
+                  {address && (
+                    <>
+                      <h5 className="mt-4">
+                        Dispatched to:{" "}
+                        <span className="text-secondary">
+                          {address.addName}
+                        </span>
+                      </h5>
+                      <div className="card mt-3">
+                        <div className="card-body">
+                          <p>
+                            <strong>Name:</strong> {user.name}
+                          </p>
+                          <p>
+                            <strong>Phone Number:</strong> {address.phnNumber}
+                          </p>
+                          <p>
+                            <strong>House Number:</strong> {address.houseNo}
+                          </p>
+                          <p>
+                            <strong>Street:</strong> {address.street}
+                          </p>
+                          <p>
+                            <strong>City:</strong> {address.city}
+                          </p>
+                          <p>
+                            <strong>State:</strong> {address.state}
+                          </p>
+                          <p>
+                            <strong>Pincode:</strong> {address.pincode}
+                          </p>
+                          <p>
+                            <strong>Landmarks/Special Directions:</strong>{" "}
+                            {address.landmark ||
+                              "No Landmarks or special directions given"}
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
-                {address ? (
-                  <>
-                    {" "}
-                    <h3>
-                      Dispatched to :{" "}
-                      <span className="text-secondary">
-                        {address.addName} address
-                      </span>{" "}
-                    </h3>
-                    <div className="card">
-                      <div className="card-body">
-                        <p>
-                          <b>Name : </b>
-                          {user.name}
-                        </p>
-                        <p>
-                          <b>Phone Number : </b>
-                          {address.phnNumber}
-                        </p>
-                        <p>
-                          <b>Address</b>
-                        </p>
-                        <p>
-                          <b>House Number : </b>
-                          {address.houseNo}
-                        </p>
-                        <p>
-                          <b>Street Number : </b>
-                          {address.street}
-                        </p>
-                        <p>
-                          <b>City : </b>
-                          {address.city}
-                        </p>
-                        <p>
-                          <b>State : </b>
-                          {address.state}
-                        </p>
-                        <p>
-                          <b>Pincode : </b>
-                          {address.pincode}
-                        </p>
-                        <p>
-                          <b>Landmarks/Special Directions: </b>
-                          {address.landmark.toLowerCase() === "" ||
-                          address.landmark.toLowerCase() === "na"
-                            ? "No Landmarks or special directions given"
-                            : address.landmark}
-                        </p>
+              )}
+            </>
+          )}
+          <div className="mt-5">
+            <h2 className="mb-4 text-center">Recent Order History</h2>
+            {user.orderHistory.length > 0 ? (
+              <>
+                {" "}
+                <div className="row row-cols-1 row-cols-md-2 g-4">
+                  {[...user.orderHistory].reverse().map((history) => (
+                    <div className="col" key={history._id}>
+                      <div className="card h-100 shadow-sm">
+                        <div className="card-body">
+                          <h5 className="card-title">
+                            Order ID: {history._id}
+                          </h5>
+                          <p>
+                            <strong>Total Price:</strong> $
+                            {Number(history.total).toFixed(2)}
+                          </p>
+                          {history.items.map((item, index) => (
+                            <div
+                              key={index}
+                              className="mb-2 border-bottom pb-1"
+                            >
+                              <strong>
+                                {item.itemId.name || item.itemId.title}
+                              </strong>
+                              <p className="text-muted mb-0">
+                                Quantity: {item.quantity}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="px-4 mb-3">
+                          <button
+                            onClick={() =>
+                              setAddressDis(
+                                addressDis === history._id ? "" : history._id
+                              )
+                            }
+                            className="btn btn-link p-0"
+                          >
+                            {addressDis === history._id
+                              ? "Hide Address"
+                              : "Show Address"}
+                          </button>
+                          {addressDis === history._id && (
+                            <div className="mt-2 text-start">
+                              {console.log(history)}
+                              <p>
+                                <strong>Address Name:</strong>{" "}
+                                {history.address[0].addName}
+                              </p>
+                              <p>
+                                <strong>Contact Number:</strong>{" "}
+                                {history.address[0].phnNumber}
+                              </p>
+                              <p>
+                                <strong>House Number:</strong>{" "}
+                                {history.address[0].houseNo}
+                              </p>
+                              <p>
+                                <strong>Street:</strong>{" "}
+                                {history.address[0].street}[0]
+                              </p>
+                              <p>
+                                <strong>City:</strong> {history.address[0].city}
+                              </p>
+                              <p>
+                                <strong>State:</strong> {history.address[0].state}
+                              </p>
+                              <p>
+                                <strong>Country:</strong>{" "}
+                                {history.address[0].country}
+                              </p>
+                              <p>
+                                <strong>Pincode:</strong>{" "}
+                                {history.address[0].pincode}
+                              </p>
+                              <p>
+                                <strong>Landmarks/Special Directions:</strong>{" "}
+                                {history.address[0].landmark ||
+                                  "No Landmarks or special directions given"}
+                              </p>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </>
-                ) : (
-                  <>
-                    <p>No address saved</p>
-                  </>
-                )}
-              </div>
-            </main>
-          )}
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mt-3 text-center">
+                  <p className="text-secondary fs-2">No Orders Found</p>
+                </div>
+              </>
+            )}
+          </div>
         </div>
         <Footer />
       </div>
