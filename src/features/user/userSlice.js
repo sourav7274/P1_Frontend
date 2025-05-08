@@ -10,7 +10,10 @@ export const getUser = createAsyncThunk(
   "get/user",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`http://localhost:5000/login`, data);
+      const response = await axios.post(
+        `https://p1-backend-pqsg.onrender.com/login`,
+        data
+      );
       const result = await response.data;
       localStorage.setItem("token", result.token);
       sessionStorage.setItem("user", JSON.stringify(result.user));
@@ -22,17 +25,22 @@ export const getUser = createAsyncThunk(
   }
 );
 export const getUserByID = createAsyncThunk("get/userId", async (id) => {
-  const response = await axios.get(`http://localhost:5000/userId/${id}`);
+  const response = await axios.get(
+    `https://p1-backend-pqsg.onrender.com/userId/${id}`
+  );
   return response.data.user[0];
 });
 export const makeOrder = createAsyncThunk("/post/order", async (data) => {
-  const response = await axios.post(`http://localhost:5000/order`, data);
+  const response = await axios.post(
+    `https://p1-backend-pqsg.onrender.com/order`,
+    data
+  );
   // console.log(response.data);
   return response.data.user;
 });
 
 // export const getOrders = createAsyncThunk("get/orders", async (id) => {
-//   const response = await axios.get(`http://localhost:5000//orderHistory/${id}`);
+//   const response = await axios.get(`https://p1-backend-pqsg.onrender.com//orderHistory/${id}`);
 //   // console.log(response.data);
 // });
 
@@ -41,7 +49,7 @@ export const addtoCartFWish = createAsyncThunk(
   async ({ id, data }) => {
     console.log(data);
     const response = await axios.put(
-      `http://localhost:5000/${id}/cartFWish`,
+      `https://p1-backend-pqsg.onrender.com/${id}/cartFWish`,
       data
     );
     return response.data.user;
@@ -51,7 +59,10 @@ export const addtoCartFWish = createAsyncThunk(
 export const deleteItemFCart = createAsyncThunk(
   "delete/cart",
   async ({ id, data }) => {
-    const response = await axios.put(`http://localhost:5000/${id}/cart`, data);
+    const response = await axios.put(
+      `https://p1-backend-pqsg.onrender.com/${id}/cart`,
+      data
+    );
     // console.log(response.data);
     return response.data.user;
   }
@@ -62,7 +73,7 @@ export const deleteItemFWishlist = createAsyncThunk(
   async ({ id, data }) => {
     console.log(data);
     const response = await axios.put(
-      `http://localhost:5000/${id}/wishlist`,
+      `https://p1-backend-pqsg.onrender.com/${id}/wishlist`,
       data
     );
     return response.data.user;
@@ -73,7 +84,10 @@ export const postUser = createAsyncThunk(
   "post/user",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.post("http://localhost:5000/user", data);
+      const response = await axios.post(
+        "https://p1-backend-pqsg.onrender.com/user",
+        data
+      );
       const result = await response.data;
       // console.log(result);
       return result.newUser;
@@ -91,7 +105,10 @@ export const postUser = createAsyncThunk(
 export const updateUser = createAsyncThunk(
   "update/user",
   async ({ id, data }) => {
-    const response = await axios.put(`http://localhost:5000/user/${id}`, data);
+    const response = await axios.put(
+      `https://p1-backend-pqsg.onrender.com/user/${id}`,
+      data
+    );
     const result = await response.data;
     // console.log(result.user)
     return result.user;
@@ -102,7 +119,7 @@ export const addToWishlist = createAsyncThunk(
   "add/wish",
   async ({ id, data }) => {
     const response = await axios.post(
-      `http://localhost:5000/user/${id}/wishlist`,
+      `https://p1-backend-pqsg.onrender.com/user/${id}/wishlist`,
       data
     );
     // console.log(response.data.user)
@@ -112,7 +129,7 @@ export const addToWishlist = createAsyncThunk(
 
 export const addToCart = createAsyncThunk("add/cart", async ({ id, data }) => {
   const response = await axios.post(
-    `http://localhost:5000/user/${id}/cart`,
+    `https://p1-backend-pqsg.onrender.com/user/${id}/cart`,
     data
   );
   return response.data.user;
@@ -123,7 +140,7 @@ export const deleteAddress = createAsyncThunk(
   async ({ id, addId }) => {
     // console.log(id, addId);
     const response = await axios.put(
-      `http://localhost:5000/deleteAddress/${id}`,
+      `https://p1-backend-pqsg.onrender.com/deleteAddress/${id}`,
       { addId }
     );
     // console.log(response.data.message);
