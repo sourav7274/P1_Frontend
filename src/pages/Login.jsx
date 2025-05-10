@@ -3,13 +3,14 @@ import { getUser, postUser } from "../features/user/userSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { clearErrors } from "../features/user/userSlice";
+import { clearErrors, clearMessage } from "../features/user/userSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { error } = useSelector((state) => state.user);
+  const { message } = useSelector((state) => state.user);
   // console.log(error)
   const [email, setMail] = useState("");
   const [password, setPasword] = useState("");
@@ -46,6 +47,19 @@ const Login = () => {
       dispatch(clearErrors());
     }, 3000);
   }, [error]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(clearMessage());
+      setIsLogin(!isLogin);
+      setUser({
+        name: "",
+        email: "",
+        password: "",
+        phone: "",
+      });
+    }, 3000);
+  }, [message]);
 
   return (
     <>
@@ -212,6 +226,22 @@ const Login = () => {
                     }}
                   >
                     {error}
+                  </div>
+                )}
+                {message != null && (
+                  <div
+                    style={{
+                      padding: "10px",
+
+                      margin: "15px 0",
+
+                      color: "white",
+                      backgroundColor: "green", // red for error
+                      textAlign: "center",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    {message}
                   </div>
                 )}
                 <div className="row mt-3">

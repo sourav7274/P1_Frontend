@@ -90,7 +90,7 @@ export const postUser = createAsyncThunk(
       );
       const result = await response.data;
       // console.log(result);
-      return result.newUser;
+      return result;
     } catch (err) {
       const message =
         err.response && err.response.data && err.response.data.err
@@ -153,10 +153,14 @@ const userSlice = createSlice({
     user: localUser || null,
     loading: null,
     error: null,
+    message: null,
   },
   reducers: {
     clearErrors: (state) => {
       state.error = null;
+    },
+    clearMessage: (state) => {
+      state.message = null;
     },
   },
   extraReducers: (builder) => {
@@ -173,7 +177,8 @@ const userSlice = createSlice({
       state.error = action.payload || "Generic message, invalid credentials";
     });
     builder.addCase(postUser.fulfilled, (state, action) => {
-      state.user = action.payload;
+      state.message = action.payload.message;
+      state.user = action.payload.newUser;
     });
     builder.addCase(postUser.rejected, (state, action) => {
       state.error =
@@ -221,4 +226,4 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const { clearErrors } = userSlice.actions;
+export const { clearErrors, clearMessage } = userSlice.actions;
