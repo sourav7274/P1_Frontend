@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { clearErrors, clearMessage } from "../features/user/userSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -49,17 +50,26 @@ const Login = () => {
   }, [error]);
 
   useEffect(() => {
-    setTimeout(() => {
-      dispatch(clearMessage());
-      setIsLogin(!isLogin);
-      setUser({
-        name: "",
-        email: "",
-        password: "",
-        phone: "",
-      });
-    }, 3000);
-  }, [message]);
+    if (message) {
+      const timeout = setTimeout(() => {
+        dispatch(clearMessage());
+
+        // Only switch to login if we're currently on the Register form
+        if (!isLogin) {
+          setIsLogin(true);
+        }
+
+        setUser({
+          name: "",
+          email: "",
+          password: "",
+          phone: "",
+        });
+      }, 3000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [message, isLogin]);
 
   return (
     <>
@@ -72,78 +82,64 @@ const Login = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-light bg-dark"
+              className="d-flex justify-content-center align-items-center bg-dark text-light"
+              style={{ height: "100vh" }}
             >
               <div
-                style={{ height: "100vh", width: "100%" }}
-                className="container ps-5 pt-5"
+                className="card p-4 shadow-lg"
+                style={{ width: "100%", maxWidth: "400px" }}
               >
-                <div className="row">
-                  <div className="col-md-6 offset-md-3">
-                    <h2 className="text-center">Login</h2>
-                    <form>
-                      <div className="mb-3">
-                        <label htmlFor="email" className="form-label">
-                          Email address
-                        </label>
-                        <input
-                          onChange={(e) => setMail(e.target.value)}
-                          type="email"
-                          className="form-control"
-                          id="email"
-                          required
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label htmlFor="password" className="form-label">
-                          Password
-                        </label>
-                        <input
-                          onChange={(e) => setPasword(e.target.value)}
-                          type="password"
-                          className="form-control"
-                          id="password"
-                          required
-                        />
-                      </div>
-                      <button
-                        onClick={(e) => handleSign(e)}
-                        type="submit"
-                        className="btn btn-light"
-                      >
-                        Login
-                      </button>
-                    </form>
+                <h3 className="text-center mb-4">Login</h3>
+                <form>
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label">
+                      Email address
+                    </label>
+                    <input
+                      onChange={(e) => setMail(e.target.value)}
+                      type="email"
+                      className="form-control"
+                      id="email"
+                      required
+                    />
                   </div>
-                </div>
-                {error !== null && (
-                  <div
-                    style={{
-                      padding: "10px",
-
-                      margin: "15px 0",
-
-                      color: "white",
-                      backgroundColor: "#dc3545", // red for error
-                      textAlign: "center",
-                      borderRadius: "5px",
-                    }}
+                  <div className="mb-3">
+                    <label htmlFor="password" className="form-label">
+                      Password
+                    </label>
+                    <input
+                      onChange={(e) => setPasword(e.target.value)}
+                      type="password"
+                      className="form-control"
+                      id="password"
+                      required
+                    />
+                  </div>
+                  <button
+                    onClick={handleSign}
+                    type="submit"
+                    className="btn btn-primary w-100"
                   >
+                    Login
+                  </button>
+                </form>
+
+                {error && (
+                  <div className="alert alert-danger text-center mt-3">
                     {error}
                   </div>
                 )}
-                <div className="row mt-3">
-                  <div className="col-md-6 offset-md-3 text-center">
-                    <p>
-                      Don't have an account?{" "}
-                      <button
-                        onClick={() => setIsLogin(!isLogin)}
-                        className="btn ms-3 btn-light"
-                      >
-                        Register Here
-                      </button>
-                    </p>
-                  </div>
+
+                <div className="text-center mt-3">
+                  <p>
+                    Don't have an account?
+                    <button
+                      onClick={() => setIsLogin(false)}
+                      className="btn btn-link text-decoration-none"
+                    >
+                      Register here
+                    </button>
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -156,106 +152,86 @@ const Login = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className=""
+              className="d-flex justify-content-center align-items-center bg-light"
+              style={{ height: "100vh" }}
             >
-              <div className="container ps-5 pt-5">
-                <div className="row">
-                  <div className="col-md-6 offset-md-3">
-                    <h2 className="text-center">Register</h2>
-                    <form>
-                      <div className="mb-3">
-                        <label className="form-label " htmlFor="name">
-                          Name
-                        </label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={user.name}
-                          onChange={handleChange}
-                          className="form-control mb-3"
-                        />
-
-                        <label htmlFor="email" className="form-label">
-                          Email address
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          onChange={handleChange}
-                          value={user.email}
-                          className="form-control mb-3"
-                          id="email"
-                          required
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label htmlFor="password" className="form-label">
-                          Password
-                        </label>
-                        <input
-                          name="password"
-                          onChange={handleChange}
-                          value={user.password}
-                          type="password"
-                          className="form-control"
-                          id="password"
-                          required
-                        />
-                      </div>
-                      <button
-                        onClick={(e) => handleRegisterSubmit(e)}
-                        type="submit"
-                        className="btn btn-dark"
-                      >
-                        Register
-                      </button>
-                    </form>
+              <div
+                className="card p-4 shadow "
+                style={{ width: "100%", maxWidth: "400px" }}
+              >
+                <h3 className="text-center mb-4">Register</h3>
+                <form>
+                  <div className="mb-3">
+                    <label className="form-label" htmlFor="name">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={user.name}
+                      onChange={handleChange}
+                      className="form-control"
+                    />
                   </div>
-                </div>
-                {error !== null && (
-                  <div
-                    style={{
-                      padding: "10px",
-
-                      margin: "15px 0",
-
-                      color: "white",
-                      backgroundColor: "#dc3545", // red for error
-                      textAlign: "center",
-                      borderRadius: "5px",
-                    }}
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label">
+                      Email address
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={user.email}
+                      onChange={handleChange}
+                      className="form-control"
+                      id="email"
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="password" className="form-label">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={user.password}
+                      onChange={handleChange}
+                      className="form-control"
+                      id="password"
+                      required
+                    />
+                  </div>
+                  <button
+                    onClick={handleRegisterSubmit}
+                    type="submit"
+                    className="btn btn-success w-100"
                   >
+                    Register
+                  </button>
+                </form>
+
+                {error && (
+                  <div className="alert alert-danger text-center mt-3">
                     {error}
                   </div>
                 )}
-                {message != null && (
-                  <div
-                    style={{
-                      padding: "10px",
 
-                      margin: "15px 0",
-
-                      color: "white",
-                      backgroundColor: "green", // red for error
-                      textAlign: "center",
-                      borderRadius: "5px",
-                    }}
-                  >
+                {message && (
+                  <div className="alert alert-success text-center mt-3">
                     {message}
                   </div>
                 )}
-                <div className="row mt-3">
-                  <div className="col-md-6 offset-md-3 text-center">
-                    <p>
-                      Already have an account?{" "}
-                      <button
-                        onClick={() => setIsLogin(!isLogin)}
-                        className="btn btn-dark  "
-                      >
-                        Sign In Here
-                      </button>
-                    </p>
-                  </div>
+
+                <div className="text-center mt-3">
+                  <p>
+                    Already have an account?
+                    <button
+                      onClick={() => setIsLogin(true)}
+                      className="btn btn-link text-decoration-none"
+                    >
+                      Sign in here
+                    </button>
+                  </p>
                 </div>
               </div>
             </motion.div>

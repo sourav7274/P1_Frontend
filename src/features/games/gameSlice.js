@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const fetchGames = createAsyncThunk("games/fetch", async () => {
   const response = await axios.get(
-    `https://p1-backend-pqsg.onrender.com/products/games`
+    `https://p1-backend.vercel.app/products/games`
   );
   return response.data.data;
 });

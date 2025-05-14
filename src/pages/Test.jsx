@@ -6,7 +6,7 @@ const Test = () => {
     // console.log(token)
     try {
       const response = await axios.get(
-        "https://p1-backend-pqsg.onrender.com/dashboard",
+        "https://p1-backend.vercel.app/dashboard",
         {
           headers: {
             Authorization: `Bearer ${token}`,
